@@ -17,8 +17,12 @@ const math=Object.create(Math);math.random=()=>{seed=(1664525*seed+1013904223)>>
 const vm=createContext({document:{getElementById:get,querySelectorAll:()=>[],addEventListener(){},createElement:()=>element()},window:{},innerWidth:800,innerHeight:600,devicePixelRatio:1,matchMedia:()=>({matches:false}),localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},addEventListener(){},requestAnimationFrame(){},performance:{now:()=>0},atob,console,Math:math,setTimeout,clearTimeout});
 for(const p of scripts)runInContext(read(p),vm,{filename:p});
 const run=s=>runInContext(s,vm);
-assert.equal(run('state'),'menu');assert.equal(run('skinNames.length'),18);
-for(let i=0;i<18;i++){run('setSkin('+i+'); renderPreview()');assert.equal(run('selectedSkin'),i);}
+assert.equal(run('state'),'menu');assert.equal(run('skinNames.length'),15);
+assert.equal(run('newHorseData.models.length'),11);
+assert.equal(run('skinSwatches.length'),15);
+assert.equal(run('skinNames.includes("Королевский")||skinNames.includes("Рыцарский")||skinNames.includes("Грибной")'),false);
+assert.deepEqual(Array.from(run('[0,9,10,11,12,13,14,15,16,17].map(migrateHorseSelection)')),[0,9,0,0,10,11,12,13,14,0]);
+for(let i=0;i<15;i++){run('setSkin('+i+'); renderPreview()');assert.equal(run('selectedSkin'),i);}
 for(let b=0;b<4;b++){
  run("quality=0; $('menuBiome').value='"+b+"'; start(); advanceIntro(2);");
  assert.equal(run('biomeIndex(distance)'),b);
@@ -27,4 +31,4 @@ for(let b=0;b<4;b++){
  console.log('zone',b,'distance',run('Math.round(distance)'),'state',run('state'));
  run('mainMenu()');
 }
-console.log('OK: 18 skins, menu and all 4 zones (mock WebGL).');
+console.log('OK: 15 skins, menu and all 4 zones (mock WebGL).');
