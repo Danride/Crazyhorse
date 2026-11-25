@@ -1,0 +1,28 @@
+
+/* v2.0.0: original medieval styling, new centered layout. */
+#game.menuMode{background:radial-gradient(ellipse at 50% 31%,#53584a 0%,#343b2d 30%,#23291f 65%,#171e18 100%)!important}
+#game.menuMode .filter{display:none}
+html:has(#game.menuMode),body:has(#game.menuMode){touch-action:pan-y}
+#mainMenu{position:absolute;inset:0;z-index:8;display:flex;justify-content:center;align-items:flex-start;padding:18px 20px 20px;background:none;font-family:Georgia,serif;overflow:auto;touch-action:pan-y}
+#mainMenu .menuStack{width:min(470px,100%);display:flex;flex-direction:column;align-items:center;gap:12px;margin:0}
+#mainMenu .menuCurrency{width:100%;text-align:left;padding:0 8px;color:#f3e8cd;font:bold 20px Georgia,serif;letter-spacing:.5px}
+#mainMenu .menuCurrency b{margin-left:8px;color:#e4c38b;font-variant-numeric:tabular-nums}
+#mainMenu .menuSoundBtn{position:absolute;right:max(20px,env(safe-area-inset-right));top:max(18px,env(safe-area-inset-top));padding:12px 16px;border:1px solid #a88c55;background:#31291fe8;color:#f2e4c7;font:bold 17px Georgia,serif;letter-spacing:1px}
+#mainMenu .menuSoundBtn:hover{background:#51402b}
+#mainMenu .previewFrame{width:100%;height:clamp(175px,40vh,375px);min-height:0;flex:none;border:1px solid #e5cc9270;box-shadow:inset 0 0 35px #181a1738;background:transparent;backdrop-filter:none;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;overflow:hidden}
+#mainMenu .previewFooter b{font:bold 18px Georgia,serif}
+#mainMenu .previewSub{display:block;margin-top:6px;color:#d8c19a;font:12px monospace}
+#mainMenu .menuPanelWrap{width:100%}
+#mainMenu #menuHome,#mainMenu #menuSkins,#mainMenu #menuShopPane{width:100%;display:flex;flex-direction:column;gap:12px;align-items:center}
+#mainMenu .menuBtn{display:block;width:100%;max-width:none;margin:0;padding:15px 20px;min-height:54px;text-align:center;background:#31291fe8;color:#f2e4c7;border:1px solid #a88c55;border-radius:0;font:bold 17px Georgia,serif;letter-spacing:1px}
+#mainMenu .menuBtn:hover{background:#51402b}
+#mainMenu .menuBtn.main{background:#e4c38b;color:#32271b}
+#mainMenu .menuChoiceGrid{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#mainMenu .menuChoice{display:flex;flex-direction:column;gap:5px;width:100%;margin:0;color:#e7d4ad;font:12px monospace}
+#mainMenu .menuChoice select{width:100%;min-width:0;background:#31291f;color:#f4e4c6;border:1px solid #a88a55;border-radius:0;padding:7px;margin:0}
+#mainMenu .menuSmall{margin:0;text-align:center;line-height:1.5}
+#mainMenu .skins{width:100%;max-width:none;margin:0;max-height:clamp(130px,27vh,270px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;grid-template-columns:repeat(3,minmax(0,1fr));padding:2px 5px 3px 2px;scrollbar-color:#a88c55 #30261e;scrollbar-width:thin}#mainMenu .skin{min-height:55px;line-height:1.1;padding:8px 3px;font-size:clamp(11px,1.6vw,14px)}#mainMenu .skin.selected{outline:1px solid #f7deaa;outline-offset:-3px}
+#mainMenu .shopHint{width:100%;padding:12px;color:#ddd0b2;border:1px solid #a88c55;background:#31291fe8;text-align:center;font:15px/1.5 Georgia,serif}
+#mainMenu .shopCoins{color:#e4c38b;font:bold 18px Georgia,serif}
+@media(max-width:760px){#mainMenu{padding:16px 14px}#mainMenu .menuStack{width:min(430px,100%);gap:10px}#mainMenu .menuCurrency{padding:4px 100px 4px 0;font-size:17px;min-height:36px}#mainMenu .menuSoundBtn{right:14px;top:16px;padding:8px 10px;font-size:14px}#mainMenu .menuBtn{min-height:48px;padding:12px 10px}#mainMenu #menuHome{gap:10px}#mainMenu .previewFrame{height:clamp(175px,37vh,320px)}}
+@media(max-height:540px) and (min-width:761px){#mainMenu .previewFrame{height:200px}#mainMenu .menuStack{gap:8px}#mainMenu .menuBtn{min-height:44px;padding:10px}}

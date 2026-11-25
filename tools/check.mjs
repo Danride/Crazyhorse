@@ -1,0 +1,15 @@
+import {readFileSync,existsSync} from 'node:fs';
+import {resolve,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {Script} from 'node:vm';
+import assert from 'node:assert/strict';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+const html=readFileSync(resolve(root,'index.html'),'utf8');
+const scripts=[...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m=>m[1]);
+const styles=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)].map(m=>m[1]);
+assert.equal(new Set(scripts).size,scripts.length);
+assert.equal(scripts.at(-1),'src/main.js');
+for(const p of [...scripts,...styles])assert(existsSync(resolve(root,p)),p);
+for(const p of scripts)new Script(readFileSync(resolve(root,p),'utf8'),{filename:p});
+new Script(scripts.map(p=>readFileSync(resolve(root,p),'utf8')).join('\n'),{filename:'combined.js'});
+console.log('OK: '+scripts.length+' JS files; '+styles.length+' CSS files; load order and syntax checked.');

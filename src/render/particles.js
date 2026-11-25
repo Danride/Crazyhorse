@@ -1,0 +1,3 @@
+'use strict';
+function burstPixels(c){let colors=[c.color,c.cloth,wood,stone,straw];for(let i=0;i<36;i++){let life=rand(.45,1.55);particles.push({x:c.x+rand(-.7,.7),d:distance+c.z+rand(-.8,.8),y:rand(.2,2.2),vx:rand(-4,4),vy:rand(1,5),vz:rand(-3,4)+c.actualV*.45,life,maxLife:life,s:rand(.09,.25),color:pick(colors)});}if(particles.length>(quality===2?360:140))particles.splice(0,particles.length-(quality===2?360:140));}
+function updateParticles(dt){for(let p of particles){p.x+=p.vx*dt;p.d+=p.vz*dt;p.y+=p.vy*dt;p.vy-=9.8*dt;if(p.y<0){p.y=0;p.vy=Math.abs(p.vy)*.25;p.vx*=.8;p.vz*=.8;}p.life-=dt;}particles=particles.filter(p=>p.life>0);}
