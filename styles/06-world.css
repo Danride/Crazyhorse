@@ -1,3 +1,1 @@
 #passWarn{position:fixed;z-index:4;top:31%;color:#fff7d6;background:#593916e8;border:1px solid #e9c16d;border-radius:4px;padding:10px 12px;font:700 12px Arial;letter-spacing:.6px;opacity:0;pointer-events:none;transition:opacity .18s;box-shadow:0 3px 14px #0005}#passWarn.active{opacity:1}#passWarn.left{left:12px}#passWarn.right{right:12px}#passWarn i{display:block;font:900 29px Arial;text-align:center;line-height:1} @media(max-width:600px){#passWarn{top:25%;padding:7px 9px;font-size:10px}}
-/* Static sky layer behind the original WebGL canvas; no camera transform. */
-#voxelSky{position:absolute;inset:0;width:100%;height:55%;pointer-events:none;opacity:.85;transition:opacity 1s}#game.menuMode #voxelSky{display:none}
