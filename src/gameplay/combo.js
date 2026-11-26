@@ -29,7 +29,7 @@ function npcComboEvent(c,oldX,oldZ,playerX,oldPlayerX,playerSpeed,airborne){
  const dx=playerX-c.x,oldDx=oldPlayerX-oldX,move=playerX-oldPlayerX,rel=playerSpeed-c.actualV;
  if(c.dead||rel<.2)return null;
  // A real cut-in: player has just passed the front collision envelope and steers back into the NPC's path.
- const cut=c.z<=-length&&c.z>=-Math.max(14,Math.min(55,rel*.8+c.actualV*.65))&&Math.abs(oldDx)>width+.28&&Math.abs(dx)<=width+.28&&Math.abs(move)>.008&&Math.sign(move)===-Math.sign(oldDx);
+ const cut=c.z<=-(bodyShape(c).front+bodyShape(c).r+1.15)&&c.z>=-Math.max(14,Math.min(55,rel*.8+c.actualV*.65))&&Math.abs(oldDx)>width+.28&&Math.abs(dx)<=width+.28&&Math.abs(move)>.008&&Math.sign(move)===-Math.sign(oldDx);
  if(cut&&!c.cutComboDone){c.cutComboDone=true;return "ПОДРЕЗАЛ";}
  // Reward a safe, tight side-by-side pass while the rider is still visible.
  if(!c.nearComboDone&&oldZ>=0&&c.z<=length+.9&&c.z>=-length-.9){

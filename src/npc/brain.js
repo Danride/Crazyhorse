@@ -27,7 +27,7 @@ function perceive(c,snapshot,dt){let T=c.traits,F=c.feelings,M=c.memory,absolute
  if(dz>0&&dz<Math.max(8,c.actualV*1.8)&&Math.abs(dx)<clearance+1&&closing>-.5)blocked=true;
  if(Math.abs(dx)<clearance+.65&&((dz>0&&ttc<1.4)||Math.abs(dz)<3.3)){let d=clamp(1-Math.max(0,ttc)/2,0,1);if(Math.abs(dz)<3.3)d=Math.max(d,.7);if(d>danger){danger=d;threat=o;}}
  // A cut-in must cross into our path, not simply be a nearby rider.
- if(old&&dz>0&&dz<Math.max(5,c.actualV*.9)&&Math.abs(dx)<clearance+.65&&Math.abs(old.dx)>clearance+.9&&Math.abs(dx)<Math.abs(old.dx)&&(closing>-.5||o.id===0)){if(o.id===0){registerPlayerCut(c);}let r=relation(c,o.id);if(o.id!==0&&nowTime-r.last>3){r.cuts++;r.last=r.updated=nowTime;r.score=clamp(r.score-25,-100,100);emotionalAdd(c,'angry',20+T.aggression*18);emotionalAdd(c,'panic',8*T.fear);socialSay(c,'cut');if(r.score<-35&&T.aggression>.55&&c.kind===0){M.target=o.id;M.chaseUntil=nowTime+rand(5,9);}}}
+ if(old&&dz>0&&dz<Math.max(5,c.actualV*.9)&&Math.abs(dx)<clearance+.65&&Math.abs(old.dx)>clearance+.9&&Math.abs(dx)<Math.abs(old.dx)&&closing>-.5&&(o.id!==0||Math.abs(o.vx||0)>.65)){if(o.id===0){registerPlayerCut(c);}let r=relation(c,o.id);if(o.id!==0&&nowTime-r.last>3){r.cuts++;r.last=r.updated=nowTime;r.score=clamp(r.score-25,-100,100);emotionalAdd(c,'angry',20+T.aggression*18);emotionalAdd(c,'panic',8*T.fear);socialSay(c,'cut');if(r.score<-35&&T.aggression>.55&&c.kind===0){M.target=o.id;M.chaseUntil=nowTime+rand(5,9);}}}
  if(old&&old.dz>0&&dz<0&&Math.abs(dx)<5&&c.actualV>o.v+1){emotionalAdd(c,'joy',16);if(Math.random()<.35)socialSay(c,'pass');}
  M.observed.set(o.id,{dx,dz,t:nowTime});if(o.ref&&o.panic>55&&Math.abs(dz)<16&&Math.abs(dx)<4)emotionalAdd(c,'panic',dt*(o.panic/100)*T.fear*18);
  }

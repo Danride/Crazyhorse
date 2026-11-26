@@ -22,6 +22,8 @@ assert.deepEqual(Array.from(run('[0,9,10,1000,2499,2500,6000].map(speedPercentAt
 assert.equal(run('Math.round(START_SPEED*3.6)'),100);
 assert.equal(run('Math.round(MAX_SPEED*3.6)'),350);assert.equal(run('skinNames.length'),15);
 assert.equal(run('TRAFFIC_MULTIPLIER'),2);
+assert(run('(()=>{let p=npcLateralStep(0,0,3.05,1/60);return p.v>0&&p.v<=9.5/60&&p.x>0;})()'));
+assert.equal(run('(()=>{prevPlayerX=px=0;prevPlayerYaw=playerYaw=0;prevJumpY=jumpY=0;return playerContact({kind:0,x:0,z:-6,stepX:0,stepZ:-5,yaw:0,stepYaw:0,actualV:10});})()'),0);
 assert.equal(run('CITY_TRAFFIC_REDUCTION'),.75);
 assert.equal(run('Math.round(52*TRAFFIC_MULTIPLIER*CITY_TRAFFIC_MULTIPLIER)'),98);
 assert(run('(()=>{let seen=new Set();for(let i=0;i<64;i++){resetBiomeRoute(-1,i*1234567);seen.add(biomeIndex(0));}return seen.size===4;})()'));
