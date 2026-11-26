@@ -29,10 +29,10 @@ function planRoadSegment(seg){
   const kind=b===0?'cart':b===1?'cart':'sheaf';
   for(let i=0;i<count;i++){
    const d=start+first+i*gap;let step=pattern===2&&i>0?(safe<3?1:-1):0;safe=clamp(safe+step,0,5);
-   const neighbor=safe<5?safe+1:safe-1,available=[0,1,2,3,4,5].filter(k=>k!==safe&&k!==neighbor);
+   const neighbor=safe<5?safe+1:safe-1,isPit=b===0&&pattern===3&&i%2===0,available=[0,1,2,3,4,5].filter(k=>k!==safe&&k!==neighbor&&(!isPit||(k>0&&k<5)));
    let blocked=[];let n=pattern===0?1:pattern===1?3:2;if(i===0&&seg===0)n=1;
    for(let j=0;j<n&&available.length;j++)blocked.push(available.splice(Math.floor(rand(0,available.length)),1)[0]);
-   rows.push(createRoadRow(d,b,b===0&&pattern===3&&i%2===0?'pit':kind,safe,blocked));
+   rows.push(createRoadRow(d,b,isPit?'pit':kind,safe,blocked));
   }
  }
  if(!patternRouteExists(rows,lastRoadLane))return [];
