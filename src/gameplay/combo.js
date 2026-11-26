@@ -46,13 +46,13 @@ function queueNpcCombo(c,label){npcComboPending.push({c,label});}
 function hideNpcCombos(){for(const el of npcComboPool)el.hidden=true;}
 function finishComboFrame(){
  let count=0,label='',points=0;for(let p of comboPending){if(p.target.dead||p.target.scoreAwarded)continue;p.target.scoreAwarded=true;count++;label=p.label;points+=awardScore(label);}comboPending.length=0;
- if(count){comboCount+=count;comboUntil=nowTime+5;comboVisibleUntil=nowTime+1.4;$('comboAction').textContent=shortComboLabel(label,comboCount);$('comboMultiplier').textContent='+'+points;$('comboMini').classList.add('active');}
+ if(count){comboCount+=count;comboUntil=nowTime+5;comboVisibleUntil=nowTime+(mobile||W<=760?.85:1.4);$('comboAction').textContent=shortComboLabel(label,comboCount);$('comboMultiplier').textContent='+'+points;$('comboMini').classList.add('active');}
  for(const p of npcComboPending){const c=p.c;if(c.dead)continue;
   if(!c.scoreActions)c.scoreActions=new Set();if(c.scoreActions.has(p.label))continue;c.scoreActions.add(p.label);
   let popup=npcComboPopups.find(a=>a.c===c);
   if(!c.comboAward){comboCount++;c.comboAward=comboCount;}comboUntil=nowTime+5;
   if(!popup){const a=c.comboAnchor;popup={c,x:a?.x??null,y:a?.y??null,side:c.x<px?-1:1,detached:false};npcComboPopups.push(popup);}
-  popup.label=p.label;popup.count=c.comboAward;popup.points=awardScore(p.label);popup.born=nowTime;popup.until=nowTime+1.6;
+  popup.label=p.label;popup.count=c.comboAward;popup.points=awardScore(p.label);popup.born=nowTime;popup.until=nowTime+(mobile||W<=760?.95:1.6);
  }
  npcComboPending.length=0;npcComboPopups=npcComboPopups.filter(p=>p.until>nowTime).slice(-4);
 }
@@ -68,7 +68,7 @@ function renderNpcCombos(){
  // Save the last actual screen position before a fast pass moves the rider behind the camera.
  for(const c of traffic){if(c.dead||c.z<.4||c.z>40||Math.abs(c.x-px)>5.5)continue;const a=riderComboAnchor(c);if(a)c.comboAnchor=a;}
  let used=0,placed=[];
- for(const a of npcComboPopups){if(a.until<=nowTime)continue;
+ const compact=mobile||W<=760;for(const a of npcComboPopups.slice(compact?-2:-4)){if(a.until<=nowTime)continue;
   const c=a.c,p=!c.dead?riderComboAnchor(c):null;
   if(p&&!a.detached){a.x=p.x;a.y=p.y;}
   else if(a.x!==null){a.detached=true;}
@@ -77,7 +77,7 @@ function renderNpcCombos(){
   let el=npcComboPool[used];if(!el){el=document.createElement('div');el.className='npcCombo';let span=document.createElement('span'),b=document.createElement('b');el.append(span,b);$('npcComboLayer').append(el);npcComboPool.push(el);}
   el.firstChild.textContent=shortComboLabel(a.label,a.count);el.lastChild.textContent='+'+a.points;
   let xx=clamp(a.x,35,Math.max(35,W-35)),yy=clamp(a.y-Math.min(14,(nowTime-a.born)*9),64,H-28);
-  for(const r of placed)if(Math.abs(r.x-xx)<78&&Math.abs(r.y-yy)<42)yy=Math.max(64,r.y-43);
+  for(const r of placed)if(Math.abs(r.x-xx)<(compact?58:78)&&Math.abs(r.y-yy)<(compact?23:42))yy=Math.max(64,r.y-(compact?24:43));
   placed.push({x:xx,y:yy});el.style.left=xx+'px';el.style.top=yy+'px';el.style.opacity=String(Math.min(1,(a.until-nowTime)/.28));el.hidden=false;used++;
  }
 }

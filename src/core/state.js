@@ -1,5 +1,5 @@
 'use strict';
-const START_SPEED=100/3.6, MAX_SPEED=350/3.6, SPEECH_SECONDS=5, MAX_SPEED_PCT=350;
+const START_SPEED=80/3.6, MAX_SPEED=350/3.6, SPEECH_SECONDS=5, MAX_SPEED_PCT=100*MAX_SPEED/START_SPEED;
 function speedPercentAt(meters){return 100+Math.min(MAX_SPEED_PCT-100,Math.max(0,Math.floor(meters/10)));}
 // Gameplay tuning: keep the existing traffic variation and steering limits.
 const TRAFFIC_MULTIPLIER=2.0, CITY_TRAFFIC_MULTIPLIER=1.25*.75, CITY_TRAFFIC_REDUCTION=.75;
