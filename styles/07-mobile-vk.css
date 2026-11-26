@@ -1,0 +1,60 @@
+/* Mobile and VK Mini Apps: no layout changes to desktop outside VK. */
+:root{--vk-inset-top:0px;--vk-inset-right:0px;--vk-inset-bottom:0px;--vk-inset-left:0px;--safe-t:max(env(safe-area-inset-top,0px),var(--vk-inset-top));--safe-r:max(env(safe-area-inset-right,0px),var(--vk-inset-right));--safe-b:max(env(safe-area-inset-bottom,0px),var(--vk-inset-bottom));--safe-l:max(env(safe-area-inset-left,0px),var(--vk-inset-left));--vk-header:0px}
+.vk-embedded{--vk-header:48px}
+html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+#distanceOnly{top:calc(max(14px,var(--safe-t)) + var(--vk-header))}
+#cleanPause{top:calc(max(12px,var(--safe-t)) + var(--vk-header));right:max(13px,var(--safe-r))}
+#runCoinHud{top:calc(max(20px,var(--safe-t)) + var(--vk-header));right:calc(max(13px,var(--safe-r)) + 53px)}
+#comboMini{top:calc(max(14px,var(--safe-t)) + var(--vk-header) + clamp(27px,4vw,48px) + clamp(8px,1.08vw,12.8px) + 27px)}
+.overlay{padding:calc(16px + var(--safe-t) + var(--vk-header)) calc(12px + var(--safe-r)) calc(16px + var(--safe-b)) calc(12px + var(--safe-l));overflow:auto}
+.modal{max-height:100%;overflow:auto;overscroll-behavior:contain;touch-action:pan-y}
+#game:has(.overlay:not(.hidden)) .touch,#game.menuMode .touch{display:none!important}
+.touch{user-select:none;-webkit-user-select:none;touch-action:none}
+.touch button{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.touch button small{display:block;font:700 8px Georgia,serif;letter-spacing:.5px}
+.touch button[data-key="Space"] span{display:block;font-size:30px;line-height:1}
+.vk-embedded #mainMenu .crazyTitle{top:calc(clamp(6px,2vh,22px) + var(--safe-t) + var(--vk-header))}
+.vk-embedded #mainMenu .menuCurrency{top:calc(clamp(15px,3vh,28px) + var(--safe-t) + var(--vk-header));right:calc(clamp(18px,3vw,45px) + var(--safe-r))}
+.vk-embedded #mainMenu .menuPanelWrap{left:calc(clamp(18px,4vw,70px) + var(--safe-l))}
+.vk-embedded #mainMenu .menuSoundBtn{bottom:calc(clamp(16px,3vh,32px) + var(--safe-b));right:calc(clamp(18px,3vw,45px) + var(--safe-r))}
+.vk-embedded #mainMenu .stableRecord{right:calc(clamp(18px,3vw,45px) + var(--safe-r))}
+.vk-embedded #mainMenu .previewFooter{bottom:calc(clamp(24px,6vh,68px) + var(--safe-b))}
+@media(pointer:coarse),(max-width:760px){
+ .touch{bottom:calc(12px + var(--safe-b));left:calc(12px + var(--safe-l));right:calc(12px + var(--safe-r));gap:10px}
+ .touch div{gap:8px}
+ .touch button{width:clamp(54px,16vw,84px);height:clamp(58px,10vh,76px);border:1px solid #e8c68b99;background:#302219b8;color:#ffe4b2;border-radius:8px;box-shadow:0 3px 8px #0005;font:700 42px/1 Georgia,serif}
+ .touch button.active{background:#e6c180;color:#38251a}
+ .touch button[data-key="Space"]{width:clamp(65px,19vw,90px)}
+ #cleanPause{width:46px;height:46px}
+ #distanceOnly{font-size:clamp(29px,7vw,43px)}
+ #distanceOnly .scoreLine{font-size:12px}
+ #runCoinHud{font-size:18px}
+ #comboMini{top:calc(max(14px,var(--safe-t)) + var(--vk-header) + clamp(29px,7vw,43px) + 40px)}
+ #passWarn{font-size:10px;max-width:calc(100vw - 32px);padding:5px 7px}
+ .speechBubble{padding:7px 10px;max-width:min(215px,62vw);font-size:13px}
+ .npcCombo span{font-size:8px}.npcCombo b{font-size:20px}
+ .modal{padding:20px 17px}.modal .primary,#backMenu{min-height:44px}
+}
+@media(max-width:760px){
+ #mainMenu,.vk-embedded #mainMenu{padding:calc(12px + var(--safe-t) + var(--vk-header)) calc(14px + var(--safe-r)) calc(18px + var(--safe-b)) calc(14px + var(--safe-l));overflow-y:auto;overscroll-behavior:contain}
+ #mainMenu .menuStack{width:100%;max-width:460px;margin:auto}
+ #mainMenu .crazyTitle,.vk-embedded #mainMenu .crazyTitle{top:auto;margin:34px 0 0;width:min(78vw,360px)}
+ #mainMenu .menuCurrency,.vk-embedded #mainMenu .menuCurrency{top:0;right:0}
+ #mainMenu .menuSoundBtn,.vk-embedded #mainMenu .menuSoundBtn{top:calc(12px + var(--safe-t) + var(--vk-header));left:calc(14px + var(--safe-l));bottom:auto;right:auto;min-height:30px}
+ #mainMenu .menuPanelWrap,.vk-embedded #mainMenu .menuPanelWrap{left:auto}
+ #mainMenu .stableRecord,.vk-embedded #mainMenu .stableRecord{right:auto}
+ #mainMenu .previewFooter,.vk-embedded #mainMenu .previewFooter{bottom:8px}
+ #mainMenu .menuBtn{min-height:48px}
+ #mainMenu .stableArrow{width:44px;height:44px}
+ #mainMenu .skin,#mainMenu .dailyClaim,#mainMenu .upgradeBuy{min-height:44px}
+ #mainMenu select{font-size:16px;min-height:40px}
+}
+@media(pointer:coarse) and (orientation:landscape) and (max-height:540px){
+ .touch{bottom:calc(8px + var(--safe-b))}
+ .touch button{width:58px;height:53px;font-size:34px}
+ .touch button[data-key="Space"]{width:72px}
+ #mainMenu .menuPanelWrap{max-height:65vh;top:50%}
+ .vk-embedded #mainMenu .crazyTitle{top:var(--safe-t);width:min(35vw,300px)}
+ .vk-embedded #mainMenu .menuCurrency{top:calc(var(--safe-t) + var(--vk-header))}
+ .modal{max-width:440px;padding:12px 16px}.modal h1{font-size:29px}.modal p{font-size:12px;margin-bottom:8px}.modal .keys{margin-bottom:8px}
+}

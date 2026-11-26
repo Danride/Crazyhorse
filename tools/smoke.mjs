@@ -18,6 +18,9 @@ const vm=createContext({document:{getElementById:get,querySelectorAll:()=>[],add
 for(const p of scripts)runInContext(read(p),vm,{filename:p});
 const run=s=>runInContext(s,vm);
 assert.equal(run('state'),'menu');
+assert.equal(run('vkLaunchDetected("?vk_app_id=123&vk_platform=mobile_android")'),true);
+assert.equal(run('vkLaunchDetected("")'),false);
+assert(run('(()=>{state="running";let a=$("start"),b=$("pause");pressTouchPointer(1,"ArrowLeft",a);pressTouchPointer(2,"Space",b);let ok=held("ArrowLeft")&&held("Space");releaseTouchPointer(1);ok=ok&&!held("ArrowLeft")&&held("Space");releaseAllControls();state="menu";return ok&&keys.size===0;})()'));
 assert.equal(run('levelInfo(0).level'),1);
 assert.equal(run('levelInfo(100).level'),2);
 assert.equal(run('levelInfo(250).level'),3);
