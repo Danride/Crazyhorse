@@ -22,6 +22,7 @@ assert.deepEqual(Array.from(run('[0,9,10,1000,2499,2500,6000].map(speedPercentAt
 assert.equal(run('Math.round(START_SPEED*3.6)'),100);
 assert.equal(run('Math.round(MAX_SPEED*3.6)'),350);assert.equal(run('skinNames.length'),15);
 assert.equal(run('TRAFFIC_MULTIPLIER'),2);
+assert(run('(()=>{resetRunScore();awardScore("БЛИЗКИЙ ОБГОН");awardScore("ПОДРЕЗАЛ");let ok=runScore===30;resetCombo();ok=ok&&runScore===30;resetRunScore();return ok&&runScore===0;})()'));
 assert(run('!!sweepBox(0,-5,0,5,1,1)'));
 assert(run('(()=>{resetSpeechGate();let a={},b={};let ok=requestNpcSpeech(a,"A",false,0)&&!requestNpcSpeech(b,"B",false,0)&&!requestNpcSpeech(b,"B",true,4);resetSpeechGate();return ok;})()'));
 assert.equal(run('sweepBox(2,-5,2,5,1,1)'),null);

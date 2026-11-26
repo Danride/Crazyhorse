@@ -17,7 +17,13 @@ function encounterStep(target,z,dx,width,length,playerX,lookAhead,overTop=false)
  if(t.near)return "БЛИЗКИЙ ПРОЕЗД";
  return null;
 }
-let comboCount=0,comboUntil=0,comboVisibleUntil=0,comboPending=[];
+let comboCount=0,comboUntil=0,comboVisibleUntil=0,comboPending=[],runScore=0;
+const SCORE_VALUES={'БЛИЗКИЙ ОБГОН':10,'БЛИЗКИЙ ПРОЕЗД':10,'ПОДРЕЗАЛ':20,'ЛОВКИЙ МАНЁВР':15,'ПРЫЖОК':20,'КАСАНИЕ В ПРЫЖКЕ':20};
+const SCORE_LABELS={'БЛИЗКИЙ ОБГОН':'ОБГОН','БЛИЗКИЙ ПРОЕЗД':'БЛИЗКО','ПОДРЕЗАЛ':'ПОДРЕЗАЛ','ЛОВКИЙ МАНЁВР':'МАНЁВР','ПРЫЖОК':'ПРЫЖОК','КАСАНИЕ В ПРЫЖКЕ':'КАСАНИЕ'};
+function updateScoreUI(){$('runScore').textContent=String(runScore);}
+function awardScore(label){let points=SCORE_VALUES[label]||0;runScore+=points;updateScoreUI();return points;}
+function resetRunScore(){runScore=0;updateScoreUI();}
+function shortComboLabel(label,count){return (SCORE_LABELS[label]||label)+(count>1?' · ×'+count:'');}
 function npcComboEvent(c,oldX,oldZ,playerX,oldPlayerX,playerSpeed,airborne){
  const tow=c.kind===1||c.kind===2,width=tow?1.38:.98,length=tow?3.6:1.85;
  const dx=playerX-c.x,oldDx=oldPlayerX-oldX,move=playerX-oldPlayerX,rel=playerSpeed-c.actualV;
@@ -39,30 +45,39 @@ function trackCombo(target,z,width,length,overTop=false){if(target.dead)return;l
 function queueNpcCombo(c,label){npcComboPending.push({c,label});}
 function hideNpcCombos(){for(const el of npcComboPool)el.hidden=true;}
 function finishComboFrame(){
- let count=0,label='';for(let p of comboPending){if(p.target.dead)continue;count++;label=p.label;}comboPending.length=0;
- if(count){comboCount+=count;comboUntil=nowTime+5;comboVisibleUntil=nowTime+2.6;$('comboAction').textContent=label;$('comboMultiplier').textContent='×'+comboCount;$('comboMini').classList.add('active');}
- for(const p of npcComboPending){const c=p.c;if(c.dead)continue;let popup=npcComboPopups.find(a=>a.c===c);
-  if(!c.comboAward){comboCount++;comboUntil=nowTime+5;c.comboAward=comboCount;}
-  if(!popup){popup={c,x:null,y:null,side:c.x<px?-1:1};npcComboPopups.push(popup);}
-  popup.label=p.label;popup.count=c.comboAward;popup.born=nowTime;popup.until=nowTime+2.3;
+ let count=0,label='',points=0;for(let p of comboPending){if(p.target.dead||p.target.scoreAwarded)continue;p.target.scoreAwarded=true;count++;label=p.label;points+=awardScore(label);}comboPending.length=0;
+ if(count){comboCount+=count;comboUntil=nowTime+5;comboVisibleUntil=nowTime+1.4;$('comboAction').textContent=shortComboLabel(label,comboCount);$('comboMultiplier').textContent='+'+points;$('comboMini').classList.add('active');}
+ for(const p of npcComboPending){const c=p.c;if(c.dead)continue;
+  if(!c.scoreActions)c.scoreActions=new Set();if(c.scoreActions.has(p.label))continue;c.scoreActions.add(p.label);
+  let popup=npcComboPopups.find(a=>a.c===c);
+  if(!c.comboAward){comboCount++;c.comboAward=comboCount;}comboUntil=nowTime+5;
+  if(!popup){const a=c.comboAnchor;popup={c,x:a?.x??null,y:a?.y??null,side:c.x<px?-1:1,detached:false};npcComboPopups.push(popup);}
+  popup.label=p.label;popup.count=c.comboAward;popup.points=awardScore(p.label);popup.born=nowTime;popup.until=nowTime+1.6;
  }
- npcComboPending.length=0;npcComboPopups=npcComboPopups.filter(p=>p.until>nowTime).slice(-6);
+ npcComboPending.length=0;npcComboPopups=npcComboPopups.filter(p=>p.until>nowTime).slice(-4);
+}
+function riderComboAnchor(c){
+ const side=c.x<px?-1:1,p=projectPoint(c.x,c.kind===3?2.05:2.05,c.z);
+ if(!p||p.depth>40||p.x<-12||p.x>W+12||p.y<45||p.y>H-25)return null;
+ const offset=clamp(16+H*.28/p.depth,24,76);
+ // On the inward side of the rider, beside the torso, not over the speech bubble.
+ return {x:clamp(p.x-side*offset,35,Math.max(35,W-35)),y:clamp(p.y+6,64,H-28)};
 }
 function renderNpcCombos(){
  hideNpcCombos();if(state!=='running')return;
+ // Save the last actual screen position before a fast pass moves the rider behind the camera.
+ for(const c of traffic){if(c.dead||c.z<.4||c.z>40||Math.abs(c.x-px)>5.5)continue;const a=riderComboAnchor(c);if(a)c.comboAnchor=a;}
  let used=0,placed=[];
  for(const a of npcComboPopups){if(a.until<=nowTime)continue;
-  const c=a.c,side=c.x<px?-1:1;
-  let p=projectPoint(c.x,c.kind===3?2.3:2.85,c.z);
-  if(p&&p.depth<Math.min(90,weatherFar())&&p.x>=0&&p.x<=W&&p.y>=65&&p.y<H-30){
-   a.x=clamp(p.x+side*38,76,Math.max(76,W-76));a.y=clamp(p.y+18,80,H-45);a.side=side;
-  }else if(a.x===null){a.x=side<0?84:Math.max(84,W-84);a.y=H*.55;a.side=side;}
-  else if(c.z<0||!p){a.x=a.side<0?84:Math.max(84,W-84);}
+  const c=a.c,p=!c.dead?riderComboAnchor(c):null;
+  if(p&&!a.detached){a.x=p.x;a.y=p.y;}
+  else if(a.x!==null){a.detached=true;}
+  else if(c.comboAnchor){a.x=c.comboAnchor.x;a.y=c.comboAnchor.y;a.detached=true;}
+  else {a.x=clamp(W*.5+(c.x<px?-1:1)*W*.28,35,W-35);a.y=H*.55;a.detached=true;}
   let el=npcComboPool[used];if(!el){el=document.createElement('div');el.className='npcCombo';let span=document.createElement('span'),b=document.createElement('b');el.append(span,b);$('npcComboLayer').append(el);npcComboPool.push(el);}
-  el.firstChild.textContent=a.label;el.lastChild.textContent='×'+a.count;
-  let yy=clamp(a.y-Math.min(16,(nowTime-a.born)*7),80,H-42);
-  for(const r of placed)if(Math.abs(r.x-a.x)<155&&Math.abs(r.y-yy)<34)yy=Math.max(76,r.y-36);
-  placed.push({x:a.x,y:yy});
-  el.style.left=a.x+'px';el.style.top=yy+'px';el.style.opacity=String(Math.min(1,(a.until-nowTime)/.35));el.hidden=false;used++;
+  el.firstChild.textContent=shortComboLabel(a.label,a.count);el.lastChild.textContent='+'+a.points;
+  let xx=clamp(a.x,35,Math.max(35,W-35)),yy=clamp(a.y-Math.min(14,(nowTime-a.born)*9),64,H-28);
+  for(const r of placed)if(Math.abs(r.x-xx)<78&&Math.abs(r.y-yy)<42)yy=Math.max(64,r.y-43);
+  placed.push({x:xx,y:yy});el.style.left=xx+'px';el.style.top=yy+'px';el.style.opacity=String(Math.min(1,(a.until-nowTime)/.28));el.hidden=false;used++;
  }
 }
