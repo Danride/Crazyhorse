@@ -67,7 +67,8 @@ function playerContact(c){
   if(approach<.08&&d1>=d0-.002)continue;
   if(Math.min(heightAt(hit[0]),heightAt(hit[1]))>.05&&side>.60){if(!c.sideSafe){sideTouches++;c.sideSafe=true;}continue;}
   const centerX=(p0.x-old.x)+((p1.x-c.x)-(p0.x-old.x))*t;
-  const direct=side<.62&&Math.abs(centerX)<(c.kind===1||c.kind===2?.95:.60)&&approach>=5&&rel>=7;
+  const longitudinalClosing=(old.z-p0.z)*(speed-c.actualV)>0;
+  const direct=longitudinalClosing&&side<.62&&Math.abs(centerX)<(c.kind===1||c.kind===2?.95:.60)&&approach>=5&&rel>=7;
   const severity=direct?3:approach>=3.0?2:1;
   if(severity>result||severity===result&&len<closest){result=severity;closest=len;normal=nx;}
  }

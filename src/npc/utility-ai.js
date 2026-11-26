@@ -27,11 +27,11 @@ function npcPlanRisk(c,a,near,hazards){
  return {risk,hard,urgent};
 }
 function trafficSafety(c,desired,perception){
- const {near,hazards,danger,blocked,target}=perception,T=c.traits,F=c.feelings,bounds=edge-1,options=[];
+ const {danger,blocked,target}=perception,near=perception.near.filter(o=>Math.abs(o.z-c.z)<16+Math.max(Math.abs(c.actualV-o.v),Math.abs(desired-o.v))*2.4+Math.max(c.actualV,desired)*.8),hazards=perception.hazards.filter(h=>h.z<12+Math.max(c.actualV,desired)*2.5),T=c.traits,F=c.feelings,bounds=edge-1,options=[];
  const travel=desired,cruise=c.maneuver?.goal??c.targetX??c.x,forwardReward=c.purpose==='courier'||c.purpose==='racer'?7:3;
  function add(action,x,v,reward){options.push({action,goal:clamp(x,-bounds,bounds),speed:c.rude?overtakeSpeed(speed):clamp(v,.2,Math.max(desired,speed*.94)),reward});}
  const lane=npcLaneGoal(c.x);
- add('cruise',cruise,travel,forwardReward+5);add('follow',cruise,travel*.70,blocked?8+T.patience*9:0);add('brake',cruise,travel*.30,danger*19+T.fear*4);
+ add('cruise',cruise,travel,forwardReward+5);add('follow',cruise,travel*.70,blocked?8+T.patience*9:0);add('brake',cruise,travel*.30,blocked||danger>.05?danger*19+T.fear*4:-25);
  for(const side of [-1,1]){
   const next=clamp(lane+side*laneW,-bounds,bounds);
   if(Math.abs(next-c.x)>.4){add('overtake',next,travel*(1+T.aggression*.13),blocked?12+F.angry*.14+T.aggression*5-T.patience*5:-12);add('evade',next,travel*.78,danger*25+F.panic*.08-5);}
@@ -41,9 +41,9 @@ function trafficSafety(c,desired,perception){
  if(c.rude&&c.z<=12){for(const side of [-1,1]){let x=clamp(npcLaneGoal(px+side*3.3),-bounds,bounds);if(Math.abs(x-px)>1.65)add('rudePass',x,overtakeSpeed(speed),30+(side===c.passSide?8:0));}}
  if(c.rude&&c.z>12)add('cruise',cruise,overtakeSpeed(speed),45);
  const m=c.maneuver;
- if(m){add(m.action,m.goal,travel,forwardReward+8);add('brake',m.goal,travel*.28,danger*22+T.fear*5);}
+ if(m){add(m.action,m.goal,travel,forwardReward+8);add('brake',m.goal,travel*.28,blocked||danger>.05?danger*22+T.fear*5:-25);}
  const caution=.9+T.fear*.55+T.skill*.55+F.panic*.004;
- for(const a of options){Object.assign(a,npcPlanRisk(c,a,near,hazards));a.value=a.reward+a.speed*.13-Math.abs(a.goal-c.x)*1.25-a.risk*caution-a.hard*(45+T.skill*25);if(m)a.value-=Math.abs(a.goal-m.goal)*1.4;if(a.action==='pursue'&&danger>.45)a.value-=30;}
+ const riskCache=new Map();for(const a of options){const key=a.goal.toFixed(3)+':'+a.speed.toFixed(3);if(!riskCache.has(key))riskCache.set(key,npcPlanRisk(c,a,near,hazards));Object.assign(a,riskCache.get(key));a.value=a.reward+a.speed*.13-Math.abs(a.goal-c.x)*1.25-a.risk*caution-a.hard*(45+T.skill*25);if(m)a.value-=Math.abs(a.goal-m.goal)*1.4;if(a.action==='pursue'&&danger>.45)a.value-=30;}
  options.sort((a,b)=>b.value-a.value);let best=options[0];
  if(m){
   const settled=Math.abs(c.x-m.goal)<.16&&Math.abs(c.xVel||0)<.24;
