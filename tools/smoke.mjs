@@ -17,7 +17,10 @@ const math=Object.create(Math);math.random=()=>{seed=(1664525*seed+1013904223)>>
 const vm=createContext({document:{getElementById:get,querySelectorAll:()=>[],addEventListener(){},createElement:()=>element()},window:{},innerWidth:800,innerHeight:600,devicePixelRatio:1,matchMedia:()=>({matches:false}),localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},addEventListener(){},requestAnimationFrame(){},performance:{now:()=>0},atob,console,Math:math,setTimeout,clearTimeout});
 for(const p of scripts)runInContext(read(p),vm,{filename:p});
 const run=s=>runInContext(s,vm);
-assert.equal(run('state'),'menu');assert.equal(run('skinNames.length'),15);
+assert.equal(run('state'),'menu');
+assert.deepEqual(Array.from(run('[0,24,25,2500,4999,5000,6000].map(speedPercentAt)')),[100,100,101,200,299,300,300]);
+assert.equal(run('START_SPEED*3.6'),108);
+assert.equal(run('MAX_SPEED*3.6'),324);assert.equal(run('skinNames.length'),15);
 assert.equal(run('newHorseData.models.length'),11);
 assert.equal(run('skinSwatches.length'),15);
 assert.equal(run('skinNames.includes("Королевский")||skinNames.includes("Рыцарский")||skinNames.includes("Грибной")'),false);
