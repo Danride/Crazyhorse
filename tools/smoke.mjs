@@ -22,6 +22,10 @@ assert.deepEqual(Array.from(run('[0,9,10,1000,2499,2500,6000].map(speedPercentAt
 assert.equal(run('Math.round(START_SPEED*3.6)'),100);
 assert.equal(run('Math.round(MAX_SPEED*3.6)'),350);assert.equal(run('skinNames.length'),15);
 assert.equal(run('TRAFFIC_MULTIPLIER'),2);
+assert(run('!!sweepBox(0,-5,0,5,1,1)'));
+assert.equal(run('sweepBox(2,-5,2,5,1,1)'),null);
+assert(run('!!sweepCircle(0,-5,0,5,1)'));
+assert.equal(run('sweepCircle(1.1,-5,1.1,5,1)'),null);
 assert.equal(run('Math.round(overtakeSpeed(MAX_SPEED)*3.6)'),400);
 assert.equal(run('Math.round(overtakeSpeed(START_SPEED)*3.6)'),150);
 assert.equal(run('npcComboEvent({kind:0,z:2,x:0,actualV:10},0,3,1.6,1.6,30,false)'), 'БЛИЗКИЙ ОБГОН');
