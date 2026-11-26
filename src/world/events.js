@@ -8,7 +8,7 @@ crossers=crossers.filter(c=>!c.dead&&Math.abs(c.x)<edge+12&&c.d>distance-25);for
 function triggerEvent(type,d){
  if(d===undefined)d=distance+Math.max(85,speed*2.5);const z=d-distance,zone=biomeAt(d);
  if(type===undefined)type=['barrels','crowd',null,'rams'][zone.kind];
- if(type==='barrels'){spawnBarrels(z);return true;}if(type==='crowd')return spawnCrowd(z);if(type==='rams'){spawnFlock(z);return true;}if(type==='tree'){startTree(z);return true;}return false;
+ if(type==='barrels'){spawnBarrels(z);return true;}if(type==='crowd')return spawnCrowd(z);if(type==='rams')return spawnFlock(z);if(type==='tree'){startTree(z);return true;}return false;
 }
 function runDistanceEvents(){
  for(const e of distanceEvents){if(e.done)continue;const lead=e.d-distance,trigger=e.type==='crowd'?Math.max(115,speed*3.2):e.type==='rams'?Math.max(85,speed*2.35):Math.max(65,speed*2.1);

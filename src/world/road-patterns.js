@@ -44,7 +44,7 @@ function planDistanceEvents(zone,rows){
  if(zone.kind===2)return;const type=['barrels','crowd',null,'rams'][zone.kind];
  let last=-Infinity;
  for(let d=zone.start+120;d<=zone.end-80;d+=20){
-  if(d-last<(zone.kind===1?180:245)||rows.some(r=>Math.abs(r.d-d)<38))continue;
+  if(d-last<(zone.kind===1?180:zone.kind===3?165:245)||rows.some(r=>Math.abs(r.d-d)<38))continue;
   distanceEvents.push({d,type});last=d;
  }
  if(!distanceEvents.some(e=>e.d>=zone.start&&e.d<zone.end)){

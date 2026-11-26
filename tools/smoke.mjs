@@ -23,6 +23,8 @@ const run=s=>runInContext(s,vm);
 assert.equal(run('state'),'menu');
 assert.equal(run('startupReady'),true);
 assert.equal(run('startupError'),'');
+assert(run('(()=>{for(let k=0;k<4;k++){resetBiomeRoute(k,1);distance=0;resetDensity();for(let i=0;i<3600;i++)varyDensity(1/60);let [a,b]=BIOME_TRAFFIC_RANGES[k];if(trafficDensity<a||trafficDensity>b)return false;}return true;})()'));
+assert(run('(()=>{resetBiomeRoute(3,1);distance=0;crossers=[];if(!spawnFlock(120))return false;const n=crossers.length;return n>=14&&n<=16&&!spawnFlock(140)&&crossers.length===n;})()'));
 assert(run('(()=>{state="running";px=0;vx=0;beginDrag(1,80);moveDrag(1,120);let ok=dragSteeringDirection(6)>0;moveDrag(1,40);ok=ok&&dragSteeringDirection(6)<0;finishDrag(1);state="menu";return ok&&dragSteeringDirection(6)===0;})()'));
 assert.equal(run('vkLaunchDetected("?vk_app_id=123&vk_platform=mobile_android")'),true);
 assert.equal(run('vkLaunchDetected("")'),false);
