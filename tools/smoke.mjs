@@ -22,6 +22,8 @@ for(const p of scripts)runInContext(read(p),vm,{filename:p});
 const run=s=>runInContext(s,vm);
 assert.equal(run('state'),'menu');
 assert.equal(run('startupReady'),true);
+assert.equal(run('document.getElementById("startupScreen").hidden'),true);
+assert.equal(run('document.getElementById("startupProgress").style.width'),'100%');
 assert.equal(run('startupError'),'');
 assert(run('(()=>{for(let k=0;k<4;k++){resetBiomeRoute(k,1);distance=0;resetDensity();for(let i=0;i<3600;i++)varyDensity(1/60);let [a,b]=BIOME_TRAFFIC_RANGES[k];if(trafficDensity<a||trafficDensity>b)return false;}return true;})()'));
 assert(run('(()=>{resetBiomeRoute(3,1);distance=0;crossers=[];if(!spawnFlock(120))return false;const n=crossers.length;return n>=14&&n<=16&&!spawnFlock(140)&&crossers.length===n;})()'));
