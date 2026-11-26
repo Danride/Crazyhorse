@@ -54,7 +54,17 @@ function buildStableGeometry(){
  // Carpet, scattered straw and front pedestal.
  flat(-1.3,1.3,.1,4.2,-.396,c.red);for(let side of [-1,1])flat(side*1.15-.025,side*1.15+.025,.1,4.2,-.391,c.gold);
  for(let i=0;i<80;i++){let x=(hash(i*41)*2-1)*6.8,z=hash(i*17+2)*12;if(Math.abs(x)<2.1&&Math.abs(z-6.3)<2)continue;let y=-.388;let from=n;box(x,y,z,.035,.025,.19+hash(i+11)*.23,shade(c.hay,.8+hash(i+4)*.3));rotateRange(from,x,z,hash(i*9)*6.28);}
- stablePlatform(6.3);stableLantern(-2.2,-.4,5.05);stableLantern(2.2,-.4,5.05);rawModel=false;
+ stablePlatform(6.3);stableLantern(-2.2,-.4,5.05);stableLantern(2.2,-.4,5.05);
+ // Baked warm light from lanterns and the gateway, no extra shader or GPU light cost.
+ const lights=[[-4.82,2.85,5.1],[4.82,2.85,5.1],[-3,.35,8.5],[3,.35,8.5],[-2.2,-.05,5.05],[2.2,-.05,5.05]];
+ for(let i=0;i<n;i+=6){let x=verts[i],y=verts[i+1],z=verts[i+2],warm=0;
+  for(const a of lights){let d=(x-a[0])**2+(y-a[1])**2+(z-a[2])**2;warm+=.32/(1+d*1.35);}
+  warm+=.16*Math.exp(-((x*x)*.24+(z-12.5)**2*.14))*Math.max(0,1-y*.12);
+  verts[i+3]=clamp(verts[i+3]*(.92+warm)+warm*.11,0,1);
+  verts[i+4]=clamp(verts[i+4]*(.91+warm*.73)+warm*.035,0,1);
+  verts[i+5]=clamp(verts[i+5]*(.90+warm*.32),0,1);
+ }
+ rawModel=false;
 }
 function renderPreview(){
  gl.uniform1f(uChunk,0);gl.uniform2f(uFogRange,28,65);gl.uniform2f(uWeatherTone,0,1);gl.uniform1f(uMesh,0);
