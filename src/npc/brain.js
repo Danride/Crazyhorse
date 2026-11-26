@@ -14,10 +14,11 @@ function registerPlayerCut(c){
  let r=relation(c,0);if(nowTime-r.last<1.5)return;r.cuts++;r.last=r.updated=nowTime;r.score=clamp(r.score-38,-100,100);
  emotionalAdd(c,'angry',30+c.traits.aggression*28);emotionalAdd(c,'panic',8*c.traits.fear);
  c.emotion='angry';socialSay(c,'cut');
- if(c.kind===0&&!c.rude&&(c.traits.aggression>=.65||r.cuts>=2)&&c.z<-2.1&&traffic.filter(o=>!o.dead&&o.rude&&o.z<85&&o.z>-65).length<4){
-  c.memory.target=0;c.memory.chaseUntil=nowTime+rand(7,12);setOvertaker(c,true);
+ if(c.kind===0&&!c.rude&&(c.traits.aggression>=.65||r.cuts>=2)){
+  c.memory.target=0;c.memory.chaseUntil=nowTime+rand(7,12);c.revengeReady=nowTime+4;
  }
 }
+function tryPlayerRevenge(c){if(c.rude||!c.revengeReady)return false;if(nowTime>c.revengeReady||c.z<-62){c.revengeReady=0;return false;}if(c.z>-12||traffic.filter(o=>!o.dead&&o.rude&&o.z<85&&o.z>-65).length>=4)return false;c.revengeReady=0;c.memory.target=0;c.memory.chaseUntil=nowTime+rand(7,12);setOvertaker(c,true);socialSay(c,'revenge');return true;}
 function relation(c,id){let m=c.memory.relations,r=m.get(id);if(!r){if(m.size>=8)m.delete(m.keys().next().value);r={score:0,cuts:0,last:-100,updated:nowTime};m.set(id,r);}return r;}
 function emotionalAdd(c,k,v){c.feelings[k]=clamp(c.feelings[k]+v,0,100);}
 function registerIncident(c){aiIncidents.push({id:c.id,x:c.x,d:distance+c.z,t:nowTime});if(aiIncidents.length>32)aiIncidents.shift();}

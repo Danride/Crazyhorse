@@ -15,11 +15,11 @@ function renderBubbles(){
  }
  for(const [c,a] of speechMemory){
   if(nowTime-a.last>2.8||(!a.shown&&!a.urgent)){speechMemory.delete(c);continue;}
-  if(!live.has(c)&&(c.z<10||c.dead||!traffic.includes(c)))candidates.push({c,p:{x:a.side<0?95:W-95,y:H*.40,depth:999},words:a.words,rude:a.rude,edge:true});
+  if(!live.has(c)&&(c.z<10||c.dead||!traffic.includes(c)))candidates.push({c,p:{x:a.side<0?95:W-95,y:H*.52,depth:999},words:a.words,rude:a.rude,edge:true});
  }
- candidates.sort((a,b)=>Number(b.rude)-Number(a.rude)||Number(a.edge)-Number(b.edge)||a.p.depth-b.p.depth);
- let placed=[],edges=0;
- for(const a of candidates){if(placed.length>=4)break;if(a.edge&&edges>=2)continue;
+ candidates.sort((a,b)=>Number(b.rude)-Number(a.rude)||Number(b.edge)-Number(a.edge)||a.p.depth-b.p.depth);
+ let placed=[],edges=0;const hasEdge=candidates.some(a=>a.edge);
+ for(const a of candidates){if(placed.length>=4)break;if(a.edge&&edges>=2)continue;if(!a.edge&&hasEdge&&edges===0&&placed.length>=3)continue;
   const {c,p}=a;let el=bubblePool[placed.length];if(!el){el=document.createElement('div');el.className='speechBubble';let span=document.createElement('span'),tail=document.createElement('i');tail.className='tail';el.append(span,tail);$('speechLayer').append(el);bubblePool.push(el);}
   el.firstChild.textContent=a.words;el.classList.toggle('rude',a.rude);el.classList.toggle('speechBehind',a.edge);el.hidden=false;
   let w=el.offsetWidth,h=el.offsetHeight,x=clamp(p.x,w/2+8,W-w/2-8),y=a.edge?p.y+edges*64:p.y;
