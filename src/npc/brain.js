@@ -4,10 +4,10 @@ let npcSerial=0, aiSnapshot=[], aiIncidents=[];
 const AI_TIME=[.35,.8,1.4,2.2];
 const SOCIAL_LINES={cut:['Эй, ты куда прёшь?!','Чуть подкову не проглотил, сволочь!','Поводья тебе для красоты?!'],revenge:['А вот и я, засранец!','Думал, ускакал от меня?!','Подвинься, я тебя запомнил!'],pass:['Ха! Вот как надо скакать!','До встречи в трактире!','Мои подковы быстрее твоих!'],jam:['Да тут быстрее пешком!','Кто эту телегу водить учил?!','Я так до зимы не доеду!'],danger:['Дерево! В стороны!','Ой, блядь, дорога кончилась!','Спасай копыта!'],panic:['Что там случилось?!','Конь, спокойно! САМ СПОКОЙНО!','Все с ума сошли!'],rain:['Подковы скользят, мать их!','Мокрая жопа — мокрая судьба.'],fog:['Я дальше носа коня не вижу!','Кто украл горизонт?']};
 function initBrain(c){let p=c.personality;let traits={aggression:rand(.28,.95),fear:rand(.12,.80),patience:rand(.12,.82),skill:rand(.45,.95),cheer:rand(.15,.85)};if(p==='reckless'){traits.aggression=rand(.78,1);traits.skill=rand(.25,.75);traits.fear*=.65;traits.patience*=.55;}if(p==='slow'){traits.patience=rand(.65,1);traits.aggression*=.55;}if(p==='sprinter')traits.aggression=Math.max(.48,traits.aggression);c.id=++npcSerial;c.traits=traits;c.feelings={calm:rand(45,80),panic:rand(0,10),angry:traits.aggression*18,joy:traits.cheer*36};c.memory={relations:new Map(),observed:new Map(),incidents:new Map(),target:null,chaseUntil:0};c.purpose=p==='sprinter'?'courier':p==='slow'?'traveller':pick(['traveller','courier','racer','merchant']);c.intent='cruise';c.intentUntil=0;c.brainAt=nowTime+rand(0,.10);c.brainLast=nowTime;c.lastSocial=-20;c.plan=null;return c;}
-function socialSay(c,key){const urgent=['cut','revenge','danger','panic'].includes(key);
- if(c.dead||nowTime-c.lastSocial<(urgent?1.1:5)||(!urgent&&c.wordsUntil>nowTime)||(urgent&&c.wordsRude&&c.wordsUntil>nowTime&&nowTime-(c.wordsStarted||0)<.65)||Math.abs(c.z)>Math.max(70,speed*2.6))return false;
- c.words=pick(SOCIAL_LINES[key]);c.wordsUntil=nowTime+SPEECH_SECONDS;c.wordsStarted=nowTime;c.wordsRude=['cut','revenge','jam','danger','panic'].includes(key);c.lastSocial=nowTime;
- if(urgent&&c.z<2)rememberSpeech(c,true);return true;
+function socialSay(c,key){const urgent=['cut','revenge','danger','panic'].includes(key),priority=key==='cut'||key==='revenge'?3:urgent?2:1;
+ if(c.dead||nowTime-c.lastSocial<(urgent?1.1:5)||(!urgent&&c.wordsUntil>nowTime)||Math.abs(c.z)>Math.max(70,speed*2.6)||!speechAllowed(priority))return false;
+ if(!requestNpcSpeech(c,pick(SOCIAL_LINES[key]),['cut','revenge','jam','danger','panic'].includes(key),priority))return false;
+ c.lastSocial=nowTime;return true;
 }
 function registerPlayerCut(c){
  if(c.dead||!c.memory)return;

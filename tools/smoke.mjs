@@ -23,6 +23,7 @@ assert.equal(run('Math.round(START_SPEED*3.6)'),100);
 assert.equal(run('Math.round(MAX_SPEED*3.6)'),350);assert.equal(run('skinNames.length'),15);
 assert.equal(run('TRAFFIC_MULTIPLIER'),2);
 assert(run('!!sweepBox(0,-5,0,5,1,1)'));
+assert(run('(()=>{resetSpeechGate();let a={},b={};let ok=requestNpcSpeech(a,"A",false,0)&&!requestNpcSpeech(b,"B",false,0)&&!requestNpcSpeech(b,"B",true,4);resetSpeechGate();return ok;})()'));
 assert.equal(run('sweepBox(2,-5,2,5,1,1)'),null);
 assert(run('!!sweepCircle(0,-5,0,5,1)'));
 assert.equal(run('sweepCircle(1.1,-5,1.1,5,1)'),null);
