@@ -2,9 +2,9 @@
 let aiClock=0,hudClock=0,jumpQueued=false,playerAnim=0;
 function update(dt){prevJumpY=jumpY;prevPlayerX=px;prevDistance=distance;prevPlayerYaw=playerYaw;impactSlip=Math.max(0,impactSlip-dt);nowTime+=dt;updateWeather(dt);varyDensity(dt);ordinaryTalk(dt);aiClock-=dt;let planNow=aiClock<=0;if(planNow)aiClock=.05;hudClock-=dt;let speedPct=speedPercentAt(distance);progress=(speedPct-100)/(MAX_SPEED_PCT-100);pace=speedPct/100;speed=Math.min(MAX_SPEED,START_SPEED*pace);beginComboFrame();const hs=horseStats(horseLevels,weatherRain);boost=false;let keyboardDirection=(held('KeyD','ArrowRight')?1:0)-(held('KeyA','ArrowLeft')?1:0),jumpKey=held('Space');
  if((jumpQueued||(jumpKey&&!jumpHeld))&&jumpY===0&&speed>2){jumpV=hs.jump;jumpY=.001;jumps++;}jumpQueued=false;jumpHeld=jumpKey;if(jumpY>0||jumpV>0){jumpV-=11.5*dt;jumpY+=jumpV*dt;if(jumpY<=0){jumpY=0;jumpV=0;shake=Math.max(shake,.18);}}
- let grip=hs.grip*(impactSlip>0?.48:1),air=jumpY>0?.64:1,sideSpeed=(4.6+speed*.145)*hs.lateral;let direction=keyboardDirection||dragSteeringDirection(sideSpeed*air),desiredVX=direction*sideSpeed*air;
+ let grip=hs.grip*(impactSlip>0?.48:1),air=jumpY>0?.64:1,sideSpeed=(4.6+speed*.145)*hs.lateral;let direction=keyboardDirection||dragSteeringDirection(),desiredVX=direction*sideSpeed*air;
  // Responsive reins, with a slower release than engagement. Time-based damping works at any FPS.
- let reversing=direction!==0&&vx*direction<0;let response=(direction?(reversing?15:13)*hs.turn:3.8*hs.release)*grip*air;
+ let reversing=direction!==0&&vx*direction<0;let response=(direction?(reversing?15:13)*hs.turn:(mobile&&keyboardDirection===0?8.5:3.8)*hs.release)*grip*air;
  let dv=(desiredVX-vx)*(1-Math.exp(-dt*response));let accel=52*(direction?hs.turn:hs.release)*grip*air;vx+=clamp(dv,-dt*accel,dt*accel);if(!direction&&Math.abs(vx)<.025)vx=0;
  impactPush*=Math.exp(-dt*3.7);px+=(vx+impactPush)*dt;if(px<-edge+.75||px>edge-.75){px=clamp(px,-edge+.75,edge-.75);if(Math.sign(vx)===Math.sign(px))vx=0;}
  let lean=clamp(vx/sideSpeed,-1,1);let leanResponse=direction?11*hs.turn:3.8*hs.release;steer+=(lean-steer)*(1-Math.exp(-dt*leanResponse));if(!direction&&Math.abs(steer)<.001)steer=0;playerAnim+=dt*(1.65+progress*.65);

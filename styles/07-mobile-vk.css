@@ -104,3 +104,19 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 /* Compact home controls as well as pre/post-run dialogs. */
 @media(min-width:761px){#mainMenu[data-pane="home"] .menuPanelWrap{width:clamp(180px,21vw,290px)}#mainMenu[data-pane="home"] .menuBtn{min-height:clamp(36px,5.3vh,52px);font-size:clamp(14px,1.55vw,20px);padding:7px 10px}#mainMenu[data-pane="home"] #menuHome{gap:7px}#mainMenu .crazyTitle{width:min(43vw,500px)}}
 @media(max-width:760px){#mainMenu .menuStack{gap:7px}#mainMenu .crazyTitle{width:min(65vw,290px)}#mainMenu .previewFrame{height:clamp(160px,30vh,250px)}#mainMenu #menuHome{gap:6px}#mainMenu .menuBtn{min-height:44px;font-size:16px;padding:8px 10px}#mainMenu .previewFooter{padding:3px 6px}#mainMenu .menuSmall{font-size:8px}}
+
+/* v3.5.4 — floating horizontal analog joystick. No changes to desktop layout. */
+#mobileStick{display:none;pointer-events:none}
+@media(any-pointer:coarse),(pointer:coarse){
+ #mobileStick{--stick-radius:clamp(34px,10vw,46px);position:absolute;display:block;left:calc(var(--safe-l) + var(--stick-radius) + 16px);bottom:calc(var(--stick-radius) + 22px);width:calc(var(--stick-radius)*2 + 12px);height:calc(var(--stick-radius)*2 + 12px);transform:translate(-50%,50%);opacity:.63;transition:opacity .15s ease;z-index:1}
+ #mobileStick.held{transform:translate(-50%,-50%);opacity:.96;transition:none}
+ #mobileStick .stickRing{position:absolute;inset:0;border:1px solid #e8cf9f99;border-radius:50%;background:#2c211b45;box-shadow:inset 0 0 0 4px #30221929;box-sizing:border-box}
+ #mobileStick .stickRing::before{content:"";position:absolute;left:10%;right:10%;top:50%;height:1px;background:#ffe5b33b}
+ #mobileStick .stickLeft,#mobileStick .stickRight{position:absolute;top:50%;width:7px;height:7px;border-top:1.5px solid #ffe4b2b0;border-left:1.5px solid #ffe4b2b0}
+ #mobileStick .stickLeft{left:10px;transform:translateY(-50%) rotate(-45deg)}
+ #mobileStick .stickRight{right:10px;transform:translateY(-50%) rotate(135deg)}
+ #stickKnob{position:absolute;left:calc(50% - 17px);top:calc(50% - 17px);width:34px;height:34px;box-sizing:border-box;border-radius:50%;background:radial-gradient(circle at 35% 25%,#eac58ca8,#8b6038b8);border:1px solid #f6d5a5bb;box-shadow:0 2px 6px #0005;transition:transform .12s ease-out}
+ #mobileStick.held #stickKnob{transition:none}
+ .jumpGuide{width:42px;height:42px;display:grid;place-items:center;border:1px solid #ffe4b275;border-radius:50%;background:#30221945;font-size:23px}
+}
+@media(any-pointer:coarse) and (max-height:430px){#mobileStick{--stick-radius:34px;bottom:calc(var(--stick-radius) + 12px)}}
