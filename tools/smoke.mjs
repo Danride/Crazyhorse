@@ -14,12 +14,15 @@ function element(id=''){let classes=new Set();return {id,value:'0',children:[],d
 const get=id=>{if(!elems.has(id))elems.set(id,element(id));return elems.get(id)};
 const storage=new Map();let seed=202610;
 const math=Object.create(Math);math.random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/2**32;};
-const vm=createContext({document:{getElementById:get,querySelectorAll:()=>[],addEventListener(){},createElement:()=>element()},window:{},innerWidth:800,innerHeight:600,devicePixelRatio:1,matchMedia:()=>({matches:false}),localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},addEventListener(){},requestAnimationFrame(){},performance:{now:()=>0},atob,console,Math:math,setTimeout,clearTimeout});
+const testWindow={location:{search:'',hash:''}};testWindow.parent=testWindow;
+const vm=createContext({location:testWindow.location,parent:testWindow,navigator:{userAgent:'test'},document:{getElementById:get,querySelectorAll:()=>[],addEventListener(){},createElement:()=>element()},window:testWindow,innerWidth:800,innerHeight:600,devicePixelRatio:1,matchMedia:()=>({matches:false}),localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},addEventListener(){},requestAnimationFrame(){},performance:{now:()=>0},atob,console,Math:math,setTimeout,clearTimeout});
 for(const p of scripts)runInContext(read(p),vm,{filename:p});
 const run=s=>runInContext(s,vm);
 assert.equal(run('state'),'menu');
 assert.equal(run('vkLaunchDetected("?vk_app_id=123&vk_platform=mobile_android")'),true);
 assert.equal(run('vkLaunchDetected("")'),false);
+assert.equal(run('typeof window.vkBridge.send'),'function');
+assert.equal(run('vkLaunchDetected("?vk_app_id=123")'),true);
 assert(run('(()=>{state="running";let a=$("start"),b=$("pause");pressTouchPointer(1,"ArrowLeft",a);pressTouchPointer(2,"Space",b);let ok=held("ArrowLeft")&&held("Space");releaseTouchPointer(1);ok=ok&&!held("ArrowLeft")&&held("Space");releaseAllControls();state="menu";return ok&&keys.size===0;})()'));
 assert.equal(run('levelInfo(0).level'),1);
 assert.equal(run('levelInfo(100).level'),2);
