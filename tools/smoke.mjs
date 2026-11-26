@@ -19,6 +19,8 @@ const vm=createContext({location:testWindow.location,parent:testWindow,navigator
 for(const p of scripts)runInContext(read(p),vm,{filename:p});
 const run=s=>runInContext(s,vm);
 assert.equal(run('state'),'menu');
+assert.equal(run('startupReady'),true);
+assert.equal(run('startupError'),'');
 assert.equal(run('vkLaunchDetected("?vk_app_id=123&vk_platform=mobile_android")'),true);
 assert.equal(run('vkLaunchDetected("")'),false);
 assert.equal(run('typeof window.vkBridge.send'),'function');

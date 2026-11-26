@@ -23,7 +23,7 @@ function vkHandleEvent(event){
  const {type,data}=event?.detail||{};
  if(type==='VKWebAppUpdateConfig'||type==='VKWebAppGetConfigResult')vkApplyInsets(data?.insets);
  if(type==='VKWebAppViewHide'){
-  vkHidden=true;if(vkGameReady){releaseAllControls();if(state==='running')pause();recordProgress(true);stopHoofLoop();stopHorseVoice();if(typeof speechSynthesis!=='undefined')speechSynthesis.cancel();}
+  vkHidden=vkGameReady&&(state==='running'||state==='intro');if(vkGameReady){releaseAllControls();if(state==='running')pause();recordProgress(true);stopHoofLoop();stopHorseVoice();if(typeof speechSynthesis!=='undefined')speechSynthesis.cancel();}
  }
  if(type==='VKWebAppViewRestore'){vkHidden=false;if(vkGameReady){resize();vkUpdateNavigation();}}
 }
