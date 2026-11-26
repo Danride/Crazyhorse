@@ -18,6 +18,8 @@ const vm=createContext({document:{getElementById:get,querySelectorAll:()=>[],add
 for(const p of scripts)runInContext(read(p),vm,{filename:p});
 const run=s=>runInContext(s,vm);
 assert.equal(run('state'),'menu');
+run('renderPreview()');assert(run('stableGeoN>0&&stableGeo.every(Number.isFinite)'));
+run('showMenuPane("skins")');assert.equal(run('$("mainMenu").dataset.pane'),'skins');run('showMenuPane("home")');
 assert.deepEqual(Array.from(run('[0,9,10,1000,2499,2500,6000].map(speedPercentAt)')),[100,100,101,200,349,350,350]);
 assert.equal(run('Math.round(START_SPEED*3.6)'),100);
 assert.equal(run('Math.round(MAX_SPEED*3.6)'),350);assert.equal(run('skinNames.length'),15);

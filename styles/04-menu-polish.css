@@ -1,0 +1,42 @@
+/* Crazy Horse: stable menu, all rules scoped to the menu. */
+#game.menuMode{background:linear-gradient(#3c2117,#895537 47%,#db9660 70%,#57412d)!important}
+#mainMenu{padding:0;display:block;overflow:hidden;background:radial-gradient(ellipse at 50% 49%,transparent 35%,#170d08a8 100%);color:#f9e8c9}
+#mainMenu .menuStack{position:relative;width:100%;height:100%;display:block;max-width:none;margin:0}
+#mainMenu .crazyTitle{position:absolute;z-index:2;top:clamp(6px,2vh,22px);left:50%;transform:translateX(-50%);width:min(48vw,560px);text-align:center;pointer-events:none}
+.crazyWordmark{display:block;width:100%;height:auto;filter:drop-shadow(0 3px 4px #160c06)}
+.crazySubtitle{color:#e6c99c;font:700 clamp(8px,1vw,12px)/1.2 Georgia,serif;letter-spacing:.42em;margin-top:-3px;text-shadow:0 2px 3px #261308}
+#mainMenu .menuCurrency{position:absolute;z-index:3;top:clamp(15px,3vh,28px);right:clamp(18px,3vw,45px);width:auto;min-width:110px;display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 14px;background:#302016e8;border:1px solid #c09a5e;border-radius:3px;font:700 22px Georgia,serif;color:#f0d7a1}
+#mainMenu .menuCurrency b{margin:0;color:#ffe4ae}
+.menuCoin{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#c88e35;border:1px solid #f9d689;color:#72501e;font-size:12px}
+#mainMenu .stableRecord{position:absolute;z-index:2;right:clamp(18px,3vw,45px);top:49%;width:clamp(120px,17vw,235px);padding:15px 10px;text-align:center;background:linear-gradient(115deg,#4c2b1be8,#261a13f2);border:1px solid #b8945e;border-radius:3px;box-shadow:0 5px 16px #160e0a55}
+.stableRecord>span{display:block;color:#dbb985;font:700 10px Georgia,serif;letter-spacing:1.6px}
+.stableRecord strong{display:block;color:#fbe2aa;font:700 clamp(24px,3vw,44px)/1.15 Georgia,serif;margin-top:8px}
+.stableRecord small{font-size:.52em}
+#mainMenu .previewFrame{position:absolute;inset:0;width:100%;height:100%;min-height:0;border:0;box-shadow:none;background:none;display:block;overflow:visible}
+#mainMenu .previewFrame:before,#mainMenu .previewFrame:after{display:none}
+#mainMenu .previewFooter{position:absolute;bottom:clamp(24px,6vh,68px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;justify-content:center;padding:8px 14px;min-width:180px;background:#291c12d9;border:1px solid #bc965e;border-radius:3px;pointer-events:auto}
+#mainMenu .previewFooter b{display:block;white-space:nowrap;color:#fbe4b7;font:700 clamp(16px,1.8vw,25px)/1.2 Georgia,serif}
+.stableNameLabel{display:block;color:#bfa27b;font:9px Georgia,serif;letter-spacing:1.5px;margin-bottom:3px}
+#mainMenu .stableArrow{width:30px;height:34px;background:none;border:0;color:#e6bd77;font:34px/.9 Georgia,serif;padding:0}
+#mainMenu .stableArrow:hover{color:#fff2ca}
+#mainMenu .menuPanelWrap{position:absolute;z-index:3;left:clamp(18px,4vw,70px);top:50%;transform:translateY(-42%);width:clamp(190px,24vw,350px);max-height:70vh;overflow:auto;scrollbar-width:thin;scrollbar-color:#b08a55 #2b1d12}
+#mainMenu #menuHome,#mainMenu #menuSkins,#mainMenu #menuUpgradePane,#mainMenu #menuShopPane{gap:9px}
+#mainMenu .menuBtn{position:relative;min-height:clamp(43px,6.6vh,66px);margin:0;padding:10px 12px 10px 16px;text-align:center;letter-spacing:.1px;font:700 clamp(15px,1.9vw,25px)/1.1 Georgia,serif;color:#f2deb6;background:repeating-linear-gradient(3deg,#ffffff03 0 1px,#00000008 1px 5px,transparent 5px 13px),linear-gradient(110deg,#5d3723,#352218 70%,#42281c);border:1px solid #be985f;border-radius:3px;box-shadow:0 4px 10px #160c0666;transition:background .15s,filter .15s,transform .15s}
+#mainMenu #menuHome .menuBtn{display:flex;align-items:center;gap:12px;text-align:left}
+#mainMenu .menuBtn.main{color:#ffeac0;border-color:#f0c17b;background:linear-gradient(105deg,#895b32,#53321e)}
+#mainMenu .menuBtn:hover{filter:brightness(1.22);transform:translateY(-1px)}
+.stableBtnIcon{width:26px;flex:none;color:#dfb46d;text-align:center;font-size:1.05em}
+#mainMenu .menuChoiceGrid{display:block;margin-top:3px}
+#mainMenu .menuChoice{padding:6px 9px;background:#291c13cc;border:1px solid #a07a4866;border-radius:3px;color:#d9bd91;font:10px Georgia,serif;letter-spacing:1px}
+#mainMenu .menuChoice select{font:13px Georgia,serif;letter-spacing:0;border:1px solid #987343;background:#36251a}
+#mainMenu .menuSoundBtn{z-index:4;right:clamp(18px,3vw,45px);top:auto;bottom:clamp(16px,3vh,32px);font:700 12px Georgia,serif;padding:10px 13px;border:1px solid #bc965e;border-radius:3px;background:#2c1e16e8;color:#f1d8a6}
+#mainMenu .menuSmall{position:absolute;bottom:12px;left:clamp(18px,4vw,70px);text-align:left;color:#cbb28c;font:10px/1.5 Georgia,serif;text-shadow:0 1px 3px #120a04}
+#mainMenu .skin,#mainMenu .shopHint,#mainMenu .upgradeCard{border:1px solid #a98555;border-radius:3px;background:#36251beF;color:#efdcbb}
+#mainMenu .skin.selected{background:#b18a51;color:#21170f;outline:none;border-color:#ffe0a2}
+#mainMenu .skins{max-height:43vh;grid-template-columns:repeat(2,minmax(0,1fr))}
+#mainMenu .upgradeBuy{border:1px solid #d5b17b;background:#ad8248;color:#23180e;border-radius:2px}
+#mainMenu[data-pane="upgrades"] .menuPanelWrap,#mainMenu[data-pane="skins"] .menuPanelWrap,#mainMenu[data-pane="shop"] .menuPanelWrap{width:clamp(220px,29vw,420px);transform:translateY(-42%);max-height:72vh}
+#mainMenu button:focus-visible,#mainMenu select:focus-visible{outline:2px solid #f6d69c;outline-offset:3px}
+@media(min-width:761px) and (max-height:560px){#mainMenu .crazyTitle{width:min(42vw,390px);top:0}#mainMenu .menuPanelWrap{top:46%;max-height:77vh}#mainMenu .menuBtn{min-height:38px;font-size:15px;padding:7px 10px}#mainMenu .previewFooter{bottom:12px}#mainMenu .menuSmall{font-size:8px;bottom:6px}}
+@media(max-width:760px){#mainMenu{padding:12px 15px 20px;overflow:auto;background:linear-gradient(#23150e44 0%,transparent 30%,#261910 68%)}#mainMenu .menuStack{height:auto;min-height:100%;display:flex;flex-direction:column;gap:9px;align-items:stretch}#mainMenu .crazyTitle{position:relative;transform:none;left:auto;top:auto;width:min(78vw,360px);align-self:center;margin:10px 0 0}#mainMenu .menuCurrency{top:0;right:0;font-size:15px;min-width:70px;padding:5px 7px}.menuCoin{width:15px;height:15px;font-size:8px}#mainMenu .crazySubtitle{font-size:8px}#mainMenu .stableRecord{position:absolute;top:104px;right:0;z-index:2;width:auto;padding:6px 8px}.stableRecord>span{font-size:7px;letter-spacing:.5px}.stableRecord strong{font-size:18px;margin-top:2px}#mainMenu .previewFrame{position:relative;inset:auto;height:clamp(190px,35vh,330px);overflow:hidden;border:1px solid #ad8b5655;border-radius:4px}#mainMenu .previewFooter{bottom:8px;gap:12px;padding:5px 8px;min-width:150px}#mainMenu .previewFooter b{font-size:16px}#mainMenu .stableNameLabel{font-size:8px}#mainMenu .menuPanelWrap,#mainMenu[data-pane] .menuPanelWrap{position:relative;inset:auto;transform:none;width:100%;max-height:none;overflow:visible}#mainMenu .menuBtn{min-height:46px;font-size:18px}#mainMenu #menuHome .menuBtn{justify-content:center}#mainMenu .menuSoundBtn{position:absolute;top:12px;left:14px;bottom:auto;right:auto;font-size:10px;padding:6px 8px}#mainMenu .menuSmall{position:relative;left:auto;bottom:auto;text-align:center;font-size:9px}#mainMenu .skins{grid-template-columns:repeat(3,minmax(0,1fr));max-height:45vh}}
+@media(prefers-reduced-motion:reduce){#mainMenu .menuBtn{transition:none}}
