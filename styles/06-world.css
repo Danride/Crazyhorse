@@ -1,7 +1,7 @@
 #passWarn{position:fixed;z-index:4;top:31%;color:#fff7d6;background:#593916e8;border:1px solid #e9c16d;border-radius:4px;padding:10px 12px;font:700 12px Arial;letter-spacing:.6px;opacity:0;pointer-events:none;transition:opacity .18s;box-shadow:0 3px 14px #0005}#passWarn.active{opacity:1}#passWarn.left{left:12px}#passWarn.right{right:12px}#passWarn i{display:block;font:900 29px Arial;text-align:center;line-height:1} @media(max-width:600px){#passWarn{top:25%;padding:7px 9px;font-size:10px}}
 
-/* Small, non-interactive combo notification below the distance counter. */
-#comboMini{position:absolute;z-index:3;top:calc(max(14px,env(safe-area-inset-top)) + clamp(27px,4vw,48px) + 9px);left:50%;transform:translate(-50%,-5px);display:flex;align-items:center;gap:8px;max-width:85vw;white-space:nowrap;padding:5px 9px;border:1px solid #d8b978aa;border-radius:5px;background:#35291edb;color:#fff0cf;font:700 clamp(10px,1.25vw,13px)/1.2 Georgia,serif;letter-spacing:.3px;pointer-events:none;opacity:0;transition:opacity .16s,transform .16s}
-#comboMini.active{opacity:1;transform:translate(-50%,0)}
-#comboMini b{color:#f2ce83;font:bold 14px Georgia,serif}
+/* Visible combo plaque, above the scene but below the pause dialog. */
+#comboMini{position:absolute;z-index:4;top:calc(max(14px,env(safe-area-inset-top)) + clamp(27px,4vw,48px) + 14px);left:50%;transform:translate(-50%,-6px);display:flex;align-items:center;gap:10px;max-width:86vw;white-space:nowrap;padding:9px 14px;border:1px solid #f0cf88;border-radius:6px;background:#281d13ed;color:#fff5de;font:700 clamp(14px,2vw,18px)/1.2 Georgia,serif;letter-spacing:.3px;pointer-events:none;opacity:0;visibility:hidden;box-shadow:0 3px 12px #0007;transition:opacity .14s,transform .14s,visibility .14s}
+#comboMini.active{opacity:1;visibility:visible;transform:translate(-50%,0)}
+#comboMini b{color:#ffdc83;font:bold clamp(19px,2.8vw,25px) Georgia,serif}
 #game.menuMode #comboMini,#game:has(.overlay:not(.hidden)) #comboMini{display:none}
