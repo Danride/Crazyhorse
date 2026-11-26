@@ -22,8 +22,10 @@ assert.deepEqual(Array.from(run('[0,9,10,1000,2499,2500,6000].map(speedPercentAt
 assert.equal(run('Math.round(START_SPEED*3.6)'),100);
 assert.equal(run('Math.round(MAX_SPEED*3.6)'),350);assert.equal(run('skinNames.length'),15);
 assert.equal(run('TRAFFIC_MULTIPLIER'),2);
+assert.equal(run('Math.round(overtakeSpeed(MAX_SPEED)*3.6)'),400);
+assert.equal(run('Math.round(overtakeSpeed(START_SPEED)*3.6)'),150);
 assert.equal(run('npcComboEvent({kind:0,z:2,x:0,actualV:10},0,3,1.6,1.6,30,false)'), 'БЛИЗКИЙ ОБГОН');
-assert.equal(run('npcComboEvent({kind:0,z:-4,x:0,actualV:10},0,-3,1.05,1.3,30,false)'), 'ПОДРЕЗАЛ');
+assert.equal(run('npcComboEvent({kind:0,z:-4,x:0,actualV:10},0,-3,1.05,1.4,30,false)'), 'ПОДРЕЗАЛ');
 assert(run('horseStats({turn:5,jump:5,stability:5},1).jump**2/23>1.85'));
 assert(run('horseStats({turn:0,jump:0,stability:0},1).grip<.42'));
 assert.equal(run('upgradePrice("turn")'),100);

@@ -15,5 +15,19 @@ function runDistanceEvents(){
   if(lead>trigger)continue;if(lead<15){e.done=true;continue;}if(triggerEvent(e.type,e.d))e.done=true;
  }distanceEvents=distanceEvents.filter(e=>!e.done&&e.d>distance);
 }
-function spawnRude(){let side=px>0?-1:1,x=clamp(px+side*rand(2.0,3.4),-edge+1,edge-1),c=spawnAt(-28,0,x);if(c){c.rude=true;c.personality='sprinter';c.purpose='courier';c.traits.aggression=Math.max(.72,c.traits.aggression);emotionalAdd(c,'angry',35);c.baseV=(speed+10)/( .88+progress*.72);c.actualV=speed+10;c.targetX=x;c.speedFactor=1;c.change=5;c.speedClock=6;c.passed=true;}} 
+const OVERTAKE_DELTA=50/3.6;
+function overtakeSpeed(playerSpeed){return playerSpeed+OVERTAKE_DELTA;}
+function setOvertaker(c,revenge=false){
+ c.rude=true;c.personality='sprinter';c.purpose='courier';c.traits.aggression=Math.max(.78,c.traits.aggression);
+ c.actualV=overtakeSpeed(speed);c.baseV=c.actualV;c.speedFactor=1;c.change=5;c.speedClock=6;c.passed=c.z<0;
+ c.passSide=c.x<px?-1:1;if(Math.abs(c.x-px)<1.5)c.passSide=px>0?-1:1;
+ c.targetX=clamp(px+c.passSide*3.3,-edge+1,edge-1);c.plan=null;c.brainAt=nowTime;
+ if(!revenge)emotionalAdd(c,'angry',35);
+ return c;
+}
+function spawnRude(){
+ if(traffic.filter(c=>!c.dead&&c.rude&&c.z>-65&&c.z<85).length>=3)return false;
+ const side=px>0?-1:1,x=clamp(px+side*rand(2.5,3.6),-edge+1,edge-1),c=spawnAt(-38,0,x,true);
+ if(!c)return false;setOvertaker(c);return true;
+}
 function events(dt){runDistanceEvents();eventLeft-=dt;if(eventLeft<=0&&eventName){eventName='';$('eventBanner').classList.remove('active');$('eventStatus').textContent='ТРАКТ · СВОБОДНОЕ ДВИЖЕНИЕ';}neighClock-=dt;if(neighClock<=0){neigh(rand(.42,.85));neighClock=rand(6,14);}}

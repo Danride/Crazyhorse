@@ -10,3 +10,6 @@
 #npcComboLayer{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden}
 .npcCombo{position:absolute;display:flex;align-items:center;gap:7px;transform:translate(-50%,-50%);white-space:nowrap;padding:5px 8px;background:#30241beb;border:1px solid #e8c37c;border-radius:4px;color:#fff2d5;font:700 clamp(10px,1.5vw,14px)/1.1 Georgia,serif;text-shadow:0 1px 2px #000;box-shadow:0 2px 9px #0008}
 .npcCombo b{color:#ffdc83;font-size:1.25em}.npcCombo[hidden]{display:none!important}#game.menuMode~#npcComboLayer{display:none}
+
+/* Keep a passed rider's speech readable for 2.8 seconds at the corresponding screen edge. */
+.speechBubble.speechBehind{opacity:.94;max-width:min(220px,42vw);border-color:#ad895a}.speechBubble.speechBehind .tail{display:none}.speechBubble.speechBehind:before{content:'↶';font:12px Arial;top:4px;left:4px}

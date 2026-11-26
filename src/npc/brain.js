@@ -3,17 +3,30 @@
 let npcSerial=0, aiSnapshot=[], aiIncidents=[];
 const AI_TIME=[.35,.8,1.4,2.2];
 const SOCIAL_LINES={cut:['Эй, ты куда прёшь?!','Чуть подкову не проглотил, сволочь!','Поводья тебе для красоты?!'],revenge:['А вот и я, засранец!','Думал, ускакал от меня?!','Подвинься, я тебя запомнил!'],pass:['Ха! Вот как надо скакать!','До встречи в трактире!','Мои подковы быстрее твоих!'],jam:['Да тут быстрее пешком!','Кто эту телегу водить учил?!','Я так до зимы не доеду!'],danger:['Дерево! В стороны!','Ой, блядь, дорога кончилась!','Спасай копыта!'],panic:['Что там случилось?!','Конь, спокойно! САМ СПОКОЙНО!','Все с ума сошли!'],rain:['Подковы скользят, мать их!','Мокрая жопа — мокрая судьба.'],fog:['Я дальше носа коня не вижу!','Кто украл горизонт?']};
-function initBrain(c){let p=c.personality;let traits={aggression:rand(.12,.85),fear:rand(.15,.85),patience:rand(.2,.9),skill:rand(.45,.95),cheer:rand(.15,.85)};if(p==='reckless'){traits.aggression=rand(.68,1);traits.skill=rand(.25,.75);traits.fear*=.65;traits.patience*=.55;}if(p==='slow'){traits.patience=rand(.65,1);traits.aggression*=.55;}if(p==='sprinter')traits.aggression=Math.max(.48,traits.aggression);c.id=++npcSerial;c.traits=traits;c.feelings={calm:rand(45,80),panic:rand(0,10),angry:traits.aggression*18,joy:traits.cheer*36};c.memory={relations:new Map(),observed:new Map(),incidents:new Map(),target:null,chaseUntil:0};c.purpose=p==='sprinter'?'courier':p==='slow'?'traveller':pick(['traveller','courier','racer','merchant']);c.intent='cruise';c.intentUntil=0;c.brainAt=nowTime+rand(0,.10);c.brainLast=nowTime;c.lastSocial=-20;c.plan=null;return c;}
-function socialSay(c,key){if(c.dead||nowTime-c.lastSocial<5||c.wordsUntil>nowTime||Math.abs(c.z)>65)return false;c.words=pick(SOCIAL_LINES[key]);c.wordsUntil=nowTime+SPEECH_SECONDS;c.wordsRude=['cut','revenge','jam','danger','panic'].includes(key);c.lastSocial=nowTime;return true;}
+function initBrain(c){let p=c.personality;let traits={aggression:rand(.28,.95),fear:rand(.12,.80),patience:rand(.12,.82),skill:rand(.45,.95),cheer:rand(.15,.85)};if(p==='reckless'){traits.aggression=rand(.78,1);traits.skill=rand(.25,.75);traits.fear*=.65;traits.patience*=.55;}if(p==='slow'){traits.patience=rand(.65,1);traits.aggression*=.55;}if(p==='sprinter')traits.aggression=Math.max(.48,traits.aggression);c.id=++npcSerial;c.traits=traits;c.feelings={calm:rand(45,80),panic:rand(0,10),angry:traits.aggression*18,joy:traits.cheer*36};c.memory={relations:new Map(),observed:new Map(),incidents:new Map(),target:null,chaseUntil:0};c.purpose=p==='sprinter'?'courier':p==='slow'?'traveller':pick(['traveller','courier','racer','merchant']);c.intent='cruise';c.intentUntil=0;c.brainAt=nowTime+rand(0,.10);c.brainLast=nowTime;c.lastSocial=-20;c.plan=null;return c;}
+function socialSay(c,key){const urgent=['cut','revenge','danger','panic'].includes(key);
+ if(c.dead||nowTime-c.lastSocial<(urgent?1.1:5)||(!urgent&&c.wordsUntil>nowTime)||(urgent&&c.wordsRude&&c.wordsUntil>nowTime&&nowTime-(c.wordsStarted||0)<.65)||Math.abs(c.z)>Math.max(70,speed*2.6))return false;
+ c.words=pick(SOCIAL_LINES[key]);c.wordsUntil=nowTime+SPEECH_SECONDS;c.wordsStarted=nowTime;c.wordsRude=['cut','revenge','jam','danger','panic'].includes(key);c.lastSocial=nowTime;
+ if(urgent&&c.z<2)rememberSpeech(c,true);return true;
+}
+function registerPlayerCut(c){
+ if(c.dead||!c.memory)return;
+ let r=relation(c,0);if(nowTime-r.last<1.5)return;r.cuts++;r.last=r.updated=nowTime;r.score=clamp(r.score-38,-100,100);
+ emotionalAdd(c,'angry',30+c.traits.aggression*28);emotionalAdd(c,'panic',8*c.traits.fear);
+ c.emotion='angry';socialSay(c,'cut');
+ if(c.kind===0&&!c.rude&&(c.traits.aggression>=.65||r.cuts>=2)&&c.z<-2.1&&traffic.filter(o=>!o.dead&&o.rude&&o.z<85&&o.z>-65).length<4){
+  c.memory.target=0;c.memory.chaseUntil=nowTime+rand(7,12);setOvertaker(c,true);
+ }
+}
 function relation(c,id){let m=c.memory.relations,r=m.get(id);if(!r){if(m.size>=8)m.delete(m.keys().next().value);r={score:0,cuts:0,last:-100,updated:nowTime};m.set(id,r);}return r;}
 function emotionalAdd(c,k,v){c.feelings[k]=clamp(c.feelings[k]+v,0,100);}
 function registerIncident(c){aiIncidents.push({id:c.id,x:c.x,d:distance+c.z,t:nowTime});if(aiIncidents.length>32)aiIncidents.shift();}
-function perceive(c,snapshot,dt){let T=c.traits,F=c.feelings,M=c.memory,absolute=distance+c.z;let sight=Math.min(90,weatherFar()*.70),near=snapshot.filter(o=>o.ref!==c&&!o.ref?.dead&&Math.abs(o.z-c.z)<sight&&Math.abs(o.x-c.x)<15);let danger=0,blocked=false,threat=null;
+function perceive(c,snapshot,dt){let T=c.traits,F=c.feelings,M=c.memory,absolute=distance+c.z;let sight=Math.min(Math.max(90,c.actualV*3.1),weatherFar()*.88,340),near=snapshot.filter(o=>o.ref!==c&&!o.ref?.dead&&Math.abs(o.z-c.z)<sight&&Math.abs(o.x-c.x)<15);let danger=0,blocked=false,threat=null;
  for(let o of near){let dz=o.z-c.z,dx=o.x-c.x,closing=c.actualV-o.v;let ttc=closing>.2?dz/closing:99;let old=M.observed.get(o.id);let clearance=(c.kind===1||c.kind===2?1:.58)+o.w;
  if(dz>0&&dz<Math.max(8,c.actualV*1.8)&&Math.abs(dx)<clearance+1&&closing>-.5)blocked=true;
  if(Math.abs(dx)<clearance+.65&&((dz>0&&ttc<1.4)||Math.abs(dz)<3.3)){let d=clamp(1-Math.max(0,ttc)/2,0,1);if(Math.abs(dz)<3.3)d=Math.max(d,.7);if(d>danger){danger=d;threat=o;}}
  // A cut-in must cross into our path, not simply be a nearby rider.
- if(old&&dz>0&&dz<Math.max(5,c.actualV*.9)&&Math.abs(dx)<clearance+.65&&Math.abs(old.dx)>clearance+.9&&Math.abs(dx)<Math.abs(old.dx)&&closing>-.5){let r=relation(c,o.id);if(nowTime-r.last>4){r.cuts++;r.last=r.updated=nowTime;r.score=clamp(r.score-25,-100,100);emotionalAdd(c,'angry',20+T.aggression*18);emotionalAdd(c,'panic',8*T.fear);socialSay(c,'cut');if(r.score<-35&&T.aggression>.55&&c.kind===0){M.target=o.id;M.chaseUntil=nowTime+rand(5,9);}}}
+ if(old&&dz>0&&dz<Math.max(5,c.actualV*.9)&&Math.abs(dx)<clearance+.65&&Math.abs(old.dx)>clearance+.9&&Math.abs(dx)<Math.abs(old.dx)&&(closing>-.5||o.id===0)){if(o.id===0){registerPlayerCut(c);}let r=relation(c,o.id);if(o.id!==0&&nowTime-r.last>3){r.cuts++;r.last=r.updated=nowTime;r.score=clamp(r.score-25,-100,100);emotionalAdd(c,'angry',20+T.aggression*18);emotionalAdd(c,'panic',8*T.fear);socialSay(c,'cut');if(r.score<-35&&T.aggression>.55&&c.kind===0){M.target=o.id;M.chaseUntil=nowTime+rand(5,9);}}}
  if(old&&old.dz>0&&dz<0&&Math.abs(dx)<5&&c.actualV>o.v+1){emotionalAdd(c,'joy',16);if(Math.random()<.35)socialSay(c,'pass');}
  M.observed.set(o.id,{dx,dz,t:nowTime});if(o.ref&&o.panic>55&&Math.abs(dz)<16&&Math.abs(dx)<4)emotionalAdd(c,'panic',dt*(o.panic/100)*T.fear*18);
  }
