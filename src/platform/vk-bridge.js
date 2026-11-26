@@ -15,6 +15,7 @@ function vkApplyInsets(insets){
  for(const side of ['top','right','bottom','left']){const v=Number(insets[side]);if(Number.isFinite(v))vkInsets[side]=Math.max(0,Math.min(200,v));}
  const root=document.documentElement;if(root?.style)for(const side of Object.keys(vkInsets))root.style.setProperty('--vk-inset-'+side,vkInsets[side]+'px');
 }
+function vkStatus(msg){if(typeof startupBridgeStatus==='function')startupBridgeStatus(msg);}
 function vkCall(method,params={}){
  if(!vkClient)return Promise.resolve(null);
  try{return Promise.resolve(vkClient.send(method,params)).catch(()=>null);}catch(e){return Promise.resolve(null);}
@@ -35,21 +36,21 @@ function vkUpdateNavigation(){
 }
 async function vkConnect(client){
  if(!client||typeof client.send!=='function'||typeof client.subscribe!=='function'||vkClient)return false;
- vkClient=client;try{client.subscribe(vkHandleEvent);}catch(e){vkClient=null;startupBridgeStatus('VK Bridge: ошибка подписки');return false;}
- startupBridgeStatus('VK Bridge: отправлен VKWebAppInit');
- const timer=setTimeout(()=>{if(!vkReady)startupBridgeStatus('VK Bridge: клиент не ответил на VKWebAppInit');},8000);
+ vkClient=client;try{client.subscribe(vkHandleEvent);}catch(e){vkClient=null;vkStatus('VK Bridge: ошибка подписки');return false;}
+ vkStatus('VK Bridge: отправлен VKWebAppInit');
+ const timer=setTimeout(()=>{if(!vkReady)vkStatus('VK Bridge: клиент не ответил на VKWebAppInit');},8000);
  const result=await vkCall('VKWebAppInit',{});
  clearTimeout(timer);
- if(!result||result.result!==true){startupBridgeStatus('VK Bridge: ошибка инициализации');try{client.unsubscribe?.(vkHandleEvent);}catch(e){}vkClient=null;return false;}
- vkReady=true;startupBridgeStatus('VK Bridge: подключён');document.documentElement?.classList?.add('vk-connected');
+ if(!result||result.result!==true){vkStatus('VK Bridge: ошибка инициализации');try{client.unsubscribe?.(vkHandleEvent);}catch(e){}vkClient=null;return false;}
+ vkReady=true;vkStatus('VK Bridge: подключён');document.documentElement?.classList?.add('vk-connected');
  vkCall('VKWebAppSetViewSettings',{status_bar_style:'light',action_bar_color:'#302219',navigation_bar_color:'#21160f'});
  vkUpdateNavigation();vkCall('VKWebAppGetConfig').then(config=>{if(config?.insets)vkApplyInsets(config.insets);});return true;
 }
 function vkBoot(){
  if(vkLoadStarted)return;
- if(!vkEnvironment()){startupBridgeStatus('Браузерный режим');return;}
+ if(!vkEnvironment()){vkStatus('Браузерный режим');return;}
  vkLoadStarted=true;document.documentElement?.classList?.add('vk-embedded');
  if(window.vkBridge){void vkConnect(window.vkBridge);return;}
- startupBridgeStatus('VK Bridge: локальный SDK не загружен');
+ vkStatus('VK Bridge: локальный SDK не загружен');
 }
 vkBoot();
