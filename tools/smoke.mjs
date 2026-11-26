@@ -18,6 +18,11 @@ const vm=createContext({document:{getElementById:get,querySelectorAll:()=>[],add
 for(const p of scripts)runInContext(read(p),vm,{filename:p});
 const run=s=>runInContext(s,vm);
 assert.equal(run('state'),'menu');
+assert.equal(run('levelInfo(0).level'),1);
+assert.equal(run('levelInfo(100).level'),2);
+assert.equal(run('levelInfo(250).level'),3);
+assert.equal(run('dayTasks("2026-11-26").length'),3);
+run('showMenuPane("daily")');assert.equal(run('$("mainMenu").dataset.pane'),'daily');run('showMenuPane("home")');
 run('renderPreview()');assert(run('stableGeoN>0&&stableGeo.every(Number.isFinite)'));
 run('showMenuPane("skins")');assert.equal(run('$("mainMenu").dataset.pane'),'skins');run('showMenuPane("home")');
 assert.deepEqual(Array.from(run('[0,9,10,1000,2499,2500,6000].map(speedPercentAt)')),[100,100,101,200,349,350,350]);
