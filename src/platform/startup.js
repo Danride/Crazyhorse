@@ -9,7 +9,7 @@ function startupPaint(){
  if(startupReady&&!startupError)p.hidden=true;
 }
 function startupFail(msg){if(!startupError)startupError=String(msg).slice(0,350);startupPaint();}
-function startupGameReady(){startupReady=true;startupPaint();}
+function startupGameReady(){if(startupReady)return;startupReady=true;startupPaint();}
 function startupBridgeStatus(msg){startupBridge=msg;startupPaint();}
 addEventListener('error',e=>{
  const target=e.target;
