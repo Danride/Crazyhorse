@@ -58,3 +58,7 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
  .vk-embedded #mainMenu .menuCurrency{top:calc(var(--safe-t) + var(--vk-header))}
  .modal{max-width:440px;padding:12px 16px}.modal h1{font-size:29px}.modal p{font-size:12px;margin-bottom:8px}.modal .keys{margin-bottom:8px}
 }
+
+/* Very narrow phones: leave the distance centered, keep the coins to the right but below pause. */
+@media(max-width:380px){#runCoinHud{top:calc(max(12px,var(--safe-t)) + var(--vk-header) + 52px);right:max(13px,var(--safe-r));font-size:15px}.runCoinIcon{width:15px;height:15px}#distanceOnly{font-size:29px}#mainMenu .crazyTitle{width:min(78vw,300px)}}
+@media(pointer:coarse) and (orientation:landscape) and (max-height:400px){#passWarn{font-size:9px}#mainMenu .menuPanelWrap{max-height:62vh}}
