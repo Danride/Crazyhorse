@@ -6,7 +6,7 @@ function rememberSpeech(c,urgent=false){if(!c.words)return;let a=speechMemory.ge
 function projectPoint(x,y,z){if(!cameraView)return null;let [cx,cy,yaw,pitch,lx,ly]=cameraView;let dx=x-cx,dy=y-cy,xx=dx*Math.cos(yaw)-z*Math.sin(yaw),zz=dx*Math.sin(yaw)+z*Math.cos(yaw),yy=dy*Math.cos(pitch)+zz*Math.sin(pitch),depth=zz*Math.cos(pitch)-dy*Math.sin(pitch);if(depth<.65)return null;return {x:W*(.5+xx*lx/depth*.5),y:H*(.5-yy*ly/depth*.5),depth};}
 function renderBubbles(){
  clearBubbles();if(state!=='running')return;
- const c=speechOwner;if(!c||!c.words||c.wordsUntil<=nowTime){speechMemory.clear();return;}
+ const c=speechOwner;if(!c||c.voiceOnly||!c.words||c.wordsUntil<=nowTime){speechMemory.clear();return;}
  // A dead rider's normal line can finish at the edge; an actual crash ghost stays on the road.
  if(c.crashGhost)c.z=c.d-distance;
  for(const k of speechMemory.keys())if(k!==c)speechMemory.delete(k);

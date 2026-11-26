@@ -47,6 +47,8 @@ assert.equal(run('CITY_TRAFFIC_REDUCTION'),.75);
 assert.equal(run('Math.round(52*TRAFFIC_MULTIPLIER*CITY_TRAFFIC_MULTIPLIER)'),98);
 assert(run('(()=>{let seen=new Set();for(let i=0;i<64;i++){resetBiomeRoute(-1,i*1234567);seen.add(biomeIndex(0));}return seen.size===4;})()'));
 assert.equal(run('Object.keys(HORSE_AUDIO_SAMPLES).length'),2);
+assert(run('NPC_VOICE_SAMPLES.length>=3&&NPC_VOICE_SAMPLES.every(c=>atob(c.data).length>1000)'));
+assert(run('(()=>{let a=npcVoiceMix({x:px-8,z:0}),b=npcVoiceMix({x:px+8,z:70});return a.pan<0&&b.pan>0&&a.gain>b.gain})()'));
 assert(run('(()=>{resetRunScore();awardScore("БЛИЗКИЙ ОБГОН");awardScore("ПОДРЕЗАЛ");let ok=runScore===30;resetCombo();ok=ok&&runScore===30;resetRunScore();return ok&&runScore===0;})()'));
 assert(run('!!sweepBox(0,-5,0,5,1,1)'));
 assert(run('(()=>{resetSpeechGate();let a={},b={};let ok=requestNpcSpeech(a,"A",false,0)&&!requestNpcSpeech(b,"B",false,0)&&!requestNpcSpeech(b,"B",true,4);resetSpeechGate();return ok;})()'));
