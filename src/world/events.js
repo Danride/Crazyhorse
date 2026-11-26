@@ -21,7 +21,7 @@ function setOvertaker(c,revenge=false){
  c.rude=true;c.personality='sprinter';c.purpose='courier';c.traits.aggression=Math.max(.78,c.traits.aggression);
  c.actualV=overtakeSpeed(speed);c.baseV=c.actualV;c.speedFactor=1;c.change=5;c.speedClock=6;c.passed=c.z<0;
  c.passSide=c.x<px?-1:1;if(Math.abs(c.x-px)<1.5)c.passSide=px>0?-1:1;
- c.targetX=clamp(px+c.passSide*3.3,-edge+1,edge-1);c.plan=null;c.brainAt=nowTime;
+ c.targetX=clamp(px+c.passSide*3.3,-edge+1,edge-1);c.plan=null;c.maneuver=null;c.brainAt=nowTime;
  if(!revenge)emotionalAdd(c,'angry',35);
  return c;
 }
