@@ -100,3 +100,7 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
  .npcCombo span{font-size:6.5px;line-height:1}.npcCombo b{font-size:12px;line-height:1}
 }
 @media(max-height:400px){#overlay .modal{padding:9px 12px}#overlay .modal h1{font-size:21px}#overlay .modal p{font-size:11px}#overlay #resultStats{margin:4px 0;font-size:11px}#overlay .primary,#overlay #backMenu{min-height:34px}}
+
+/* Compact home controls as well as pre/post-run dialogs. */
+@media(min-width:761px){#mainMenu[data-pane="home"] .menuPanelWrap{width:clamp(180px,21vw,290px)}#mainMenu[data-pane="home"] .menuBtn{min-height:clamp(36px,5.3vh,52px);font-size:clamp(14px,1.55vw,20px);padding:7px 10px}#mainMenu[data-pane="home"] #menuHome{gap:7px}#mainMenu .crazyTitle{width:min(43vw,500px)}}
+@media(max-width:760px){#mainMenu .menuStack{gap:7px}#mainMenu .crazyTitle{width:min(65vw,290px)}#mainMenu .previewFrame{height:clamp(160px,30vh,250px)}#mainMenu #menuHome{gap:6px}#mainMenu .menuBtn{min-height:44px;font-size:16px;padding:8px 10px}#mainMenu .previewFooter{padding:3px 6px}#mainMenu .menuSmall{font-size:8px}}
