@@ -15,12 +15,17 @@ function createRoadRow(d,biome,kind,safe,blocked,pattern='разброс'){retur
 function planRoadSegment(seg){
  const zone=biomeSegment(seg),start=zone.start,end=zone.end,b=zone.kind,rows=[];
  let safe=lastRoadLane,i=0,d=start+(seg===0?105:85),previous=null;
+ // A forest starts on the side compatible with the preceding corridor; the first forest at spawn can start on either side.
+ let treeSide=b===2?(seg===0?(Math.random()<.5?-1:1):(safe<=2?1:-1)):0;
  while(d<=end-65){
   const gap=roadGapAt(d+180),forest=b===2,tree=forest&&i%3===0;
   const p=Math.floor(rand(0,6));
-  if(tree){const side=safe<=2?1:-1;safe=side===1?1:4;rows.push({...createRoadRow(d,b,'tree',safe,side===1?[2,3,4,5]:[0,1,2,3],'лесоповал'),side});}
+  if(tree){const side=treeSide;safe=side===1?1:4;rows.push({...createRoadRow(d,b,'tree',safe,side===1?[2,3,4,5]:[0,1,2,3],'лесоповал'),side});treeSide=-treeSide;}
   else{
-   if(p===2&&previous&&d-previous.d>=roadGapAt(d)&&!forest)safe=clamp(safe+(safe===0?1:safe===5?-1:(Math.random()<.5?-1:1)),0,5);
+   if(forest){
+    // The two rock groups between trees move the reserved passage one lane at a time toward the opposite side.
+    const nextSafe=treeSide===1?1:4;safe+=Math.sign(nextSafe-safe);
+   }else if(p===2&&previous&&d-previous.d>=roadGapAt(d))safe=clamp(safe+(safe===0?1:safe===5?-1:(Math.random()<.5?-1:1)),0,5);
    const neighbor=safe<5?safe+1:safe-1,pit=b===0&&(i%3===1||p===3),kind=pit?'pit':forest?'rock':b===3?'sheaf':'cart';
    let available=[0,1,2,3,4,5].filter(k=>k!==safe&&k!==neighbor&&(!pit||(k>0&&k<5)));
    const blocked=[],n=p===0||p===4?1:p===1?3:2;

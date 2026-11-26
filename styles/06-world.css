@@ -31,3 +31,5 @@
 
 /* Overtake warning floats just beyond the corresponding hand. */
 #passWarn{transform:translate(-50%,-50%);padding:4px 7px;font:700 9px/1.1 Georgia,serif;letter-spacing:.25px;background:#593916ce;border-radius:4px;text-align:center}#passWarn i{font-size:21px;line-height:1.05}
+
+#passWarn{white-space:nowrap;max-width:calc(100vw - 16px)}

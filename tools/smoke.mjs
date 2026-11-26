@@ -44,6 +44,7 @@ assert.equal(run('upgradePrice("turn")'),100);
 assert.equal(run('buyUpgrade("turn")'),false);
 run('wallet=100;');assert.equal(run('buyUpgrade("turn")'),true);assert.equal(run('wallet'),0);assert.equal(run('horseLevels.turn'),1);run('horseLevels.turn=0;');
 assert(run('Array.from({length:16},(_,i)=>planRoadSegment(i)).every(rows=>rows.length>0&&patternRouteExists(rows))'));
+assert(run('(()=>{let sides=new Set();for(let i=0;i<64;i++){resetBiomeRoute(2,i*1234567);resetRoadPatterns();const rows=planRoadSegment(0),trees=rows.filter(r=>r.kind==="tree");if(!patternRouteExists(rows)||trees.some((r,j)=>j>0&&r.side===trees[j-1].side))return false;for(const t of trees)sides.add(t.side);}return sides.size===2;})()'));
 assert(run('biomeRoute.every((r,i)=>r.length>=500&&r.length<=3000&&(!i||r.kind!==biomeRoute[i-1].kind)&&(!i||r.start===biomeRoute[i-1].end))'));
 assert.equal(run('coinSweep({d:1.6,x:0,y:.82},0,3,0,0,0,0)'),true);
 assert.equal(run('coinSweep({d:1.6,x:4,y:.82},0,3,0,0,0,0)'),false);
