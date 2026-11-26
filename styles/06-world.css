@@ -13,3 +13,18 @@
 
 /* Keep a passed rider's speech readable for 2.8 seconds at the corresponding screen edge. */
 .speechBubble.speechBehind{opacity:.94;max-width:min(220px,42vw);border-color:#ad895a}.speechBubble.speechBehind .tail{display:none}.speechBubble.speechBehind:before{content:'↶';font:12px Arial;top:4px;left:4px}
+
+/* Compact medieval HUD and rider points. */
+#distanceOnly{font-family:Georgia,"Times New Roman",serif;text-align:center;letter-spacing:.025em;font-weight:700;line-height:1}
+#distanceOnly .distanceLine{white-space:nowrap}
+#distanceOnly .scoreLine{display:flex;justify-content:center;align-items:center;margin-top:4px;color:#ffe1a0;font:bold clamp(8px,1.08vw,12.8px)/1 Georgia,"Times New Roman",serif;text-shadow:0 1px 3px #24170c}
+#distanceOnly .scoreCaption{margin-top:3px;color:#fff1cf;font:700 8px/1 Georgia,serif;letter-spacing:1px}
+#runCoinHud{position:absolute;top:max(20px,env(safe-area-inset-top));right:calc(max(13px,env(safe-area-inset-right)) + 53px);z-index:3;display:flex;align-items:center;gap:6px;color:#ffe4a0;font:bold clamp(17px,2.2vw,25px)/1 Georgia,serif;text-shadow:0 2px 4px #25180d;pointer-events:none}
+.runCoinIcon{display:grid;place-items:center;width:18px;height:18px;border:2px solid #ffdc79;border-radius:50%;background:#c9902b;color:#805015;font:12px/1 Georgia,serif;box-shadow:0 1px 3px #0006}
+#game.menuMode #runCoinHud,#game:has(.overlay:not(.hidden)) #runCoinHud{display:none}
+#comboMini{top:calc(max(14px,env(safe-area-inset-top)) + clamp(27px,4vw,48px) + clamp(8px,1.08vw,12.8px) + 27px);padding:3px 8px;gap:6px;font:700 9px/1 Georgia,serif}
+#comboMini b{font:bold 20px/1 Georgia,serif}
+.npcCombo{flex-direction:column;justify-content:center;gap:2px;padding:3px 5px;min-width:40px;max-width:95px;border-radius:3px;border-color:#d6b77d;background:#30241bd9;box-shadow:0 1px 4px #0006;text-align:center}
+.npcCombo span{font:700 clamp(7px,.8vw,10px)/1.1 Georgia,serif;letter-spacing:.12px}
+.npcCombo b{font:700 clamp(19px,2vw,25px)/1 Georgia,"Times New Roman",serif;color:#ffe4a1}
+.menuChoiceGrid{grid-template-columns:1fr}

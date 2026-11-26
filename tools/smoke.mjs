@@ -22,6 +22,10 @@ assert.deepEqual(Array.from(run('[0,9,10,1000,2499,2500,6000].map(speedPercentAt
 assert.equal(run('Math.round(START_SPEED*3.6)'),100);
 assert.equal(run('Math.round(MAX_SPEED*3.6)'),350);assert.equal(run('skinNames.length'),15);
 assert.equal(run('TRAFFIC_MULTIPLIER'),2);
+assert.equal(run('CITY_TRAFFIC_REDUCTION'),.75);
+assert.equal(run('Math.round(52*TRAFFIC_MULTIPLIER*CITY_TRAFFIC_MULTIPLIER)'),98);
+assert(run('(()=>{let seen=new Set();for(let i=0;i<64;i++){resetBiomeRoute(-1,i*1234567);seen.add(biomeIndex(0));}return seen.size===4;})()'));
+assert.equal(run('Object.keys(HORSE_AUDIO_SAMPLES).length'),2);
 assert(run('(()=>{resetRunScore();awardScore("БЛИЗКИЙ ОБГОН");awardScore("ПОДРЕЗАЛ");let ok=runScore===30;resetCombo();ok=ok&&runScore===30;resetRunScore();return ok&&runScore===0;})()'));
 assert(run('!!sweepBox(0,-5,0,5,1,1)'));
 assert(run('(()=>{resetSpeechGate();let a={},b={};let ok=requestNpcSpeech(a,"A",false,0)&&!requestNpcSpeech(b,"B",false,0)&&!requestNpcSpeech(b,"B",true,4);resetSpeechGate();return ok;})()'));
@@ -47,8 +51,9 @@ assert.equal(run('skinNames.includes("Королевский")||skinNames.includ
 assert.deepEqual(Array.from(run('[0,9,10,11,12,13,14,15,16,17].map(migrateHorseSelection)')),[0,9,0,0,10,11,12,13,14,0]);
 for(let i=0;i<15;i++){run('setSkin('+i+'); renderPreview()');assert.equal(run('selectedSkin'),i);}
 for(let b=0;b<4;b++){
- run("quality=0; $('menuBiome').value='"+b+"'; start(); advanceIntro(2);");
- assert.equal(run('biomeIndex(distance)'),b);
+ run('quality=0; start(); advanceIntro(2);');
+ assert(run('biomeIndex(distance)>=0&&biomeIndex(distance)<4'));
+ assert(run('biomeRoute[0].length>=500&&biomeRoute[0].length<=3000'));
  run('for(let i=0;i<180&&state==="running";i++){update(1/60);if(i%60===0)render();}');
  assert(run('distance')>0);assert(run('Number.isFinite(px)&&Number.isFinite(speed)'));
  console.log('zone',b,'distance',run('Math.round(distance)'),'state',run('state'));
