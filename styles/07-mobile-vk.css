@@ -139,3 +139,7 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 
 /* Cached low-poly 3D projections, static cards, full mesh remains in the large preview. */
 .horseArt{aspect-ratio:1.4;background:radial-gradient(ellipse at 50% 43%,#c6ad8c,#927252 75%,#75583d)}.horseArt svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 2px #24170d30)}.horseRarity{z-index:1}.horsePrice{font-weight:700;font-variant-numeric:tabular-nums}
+
+/* Close-up portraits use the full card, keeping the rarity ribbon readable. */
+.horseArt{aspect-ratio:1.35}.horseArt svg{transform:translateY(2px)}
+#menuStart:disabled{opacity:.55;cursor:wait}

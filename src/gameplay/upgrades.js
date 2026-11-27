@@ -8,10 +8,10 @@ let horseLevels={turn:0,jump:0,stability:0};
 try{const raw=JSON.parse(localStorage.getItem('kings-road-upgrades')||'{}');for(const k of upgradeKeys)horseLevels[k]=clamp(Math.floor(Number(raw[k])||0),0,5);}catch(e){}
 function upgradePrice(k){return upgradeCosts[horseLevels[k]]??null;}
 function buyUpgrade(k){
- if(state!=='menu'||!upgradeKeys.includes(k))return false;
+ if(state!=='menu'||saveLoading||!upgradeKeys.includes(k))return false;
  const cost=upgradePrice(k);if(cost===null||wallet<cost)return false;
  const oldWallet=wallet,oldLevels={...horseLevels};wallet-=cost;horseLevels[k]++;
- try{localStorage.setItem('kings-road-wallet',String(wallet));localStorage.setItem('kings-road-upgrades',JSON.stringify(horseLevels));}catch(e){wallet=oldWallet;horseLevels=oldLevels;try{localStorage.setItem('kings-road-wallet',String(wallet));}catch(_){}$('upgradeMessage').textContent='Не удалось сохранить покупку.';return false;}
+ if(!saveCommit()){wallet=oldWallet;horseLevels=oldLevels;$('upgradeMessage').textContent='Не удалось сохранить покупку.';return false;}
  syncWalletUI();renderUpgrades();$('upgradeMessage').textContent='Улучшение куплено.';return true;
 }
 function renderUpgrades(){

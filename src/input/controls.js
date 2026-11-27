@@ -60,7 +60,7 @@ addEventListener('keydown',e=>{
  if(e.code==='KeyR'&&state!=='menu'){releaseAllControls();state='ready';start();}
 });
 addEventListener('keyup',e=>{keyboardKeys.delete(e.code);updateControlKey(e.code);});
-function suspendControls(){releaseAllControls();if(state==='running')pause();recordProgress(true);stopHoofLoop();stopHorseVoice();}
+function suspendControls(){releaseAllControls();if(state==='running')pause();recordProgress(true);saveFlush();stopHoofLoop();stopHorseVoice();}
 addEventListener('blur',suspendControls);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)suspendControls();});
 document.querySelectorAll('[data-key]').forEach(b=>{

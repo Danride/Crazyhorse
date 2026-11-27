@@ -14,9 +14,8 @@ if(!ownedSkins.has(selectedSkin))selectedSkin=FREE_SKIN;
 let previewSkin=selectedSkin,skinFilter='all',skinSort='price';
 function ownsSkin(i){return ownedSkins.has(i);}
 function purchaseSkin(i){
- if(state!=='menu'||!Number.isInteger(i)||i<0||i>=skinNames.length||ownsSkin(i)||wallet<skinPrices[i])return false;
+ if(state!=='menu'||saveLoading||!Number.isInteger(i)||i<0||i>=skinNames.length||ownsSkin(i)||wallet<skinPrices[i])return false;
  const oldWallet=wallet,oldOwned=[...ownedSkins];wallet-=skinPrices[i];ownedSkins.add(i);
- try{localStorage.setItem('kings-road-wallet',String(wallet));localStorage.setItem(SKIN_OWNED_KEY,JSON.stringify([...ownedSkins]));}
- catch(e){wallet=oldWallet;ownedSkins=new Set(oldOwned);try{localStorage.setItem('kings-road-wallet',String(oldWallet));localStorage.setItem(SKIN_OWNED_KEY,JSON.stringify(oldOwned));}catch(_){}return false;}
+ if(!saveCommit()){wallet=oldWallet;ownedSkins=new Set(oldOwned);return false;}
  return true;
 }

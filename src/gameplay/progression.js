@@ -39,8 +39,8 @@ function refreshDaily(day=localDay()){
 function saveProgression(force=false){
  if(!progressDirty)return true;
  const t=Date.now();if(!force&&t-progressLastSave<2000)return true;
- try{localStorage.setItem(PROGRESSION_KEY,JSON.stringify(playerProgress));progressDirty=false;progressSaveError=false;progressLastSave=t;return true;}
- catch(e){progressSaveError=true;progressLastSave=t;return false;}
+ if(saveCommit()){progressDirty=false;progressSaveError=false;progressLastSave=t;return true;}
+ progressSaveError=true;progressLastSave=t;return false;
 }
 function currentProgressCounters(){return {meters:Math.floor(distance),coins:coinCount,passes,score:runScore};}
 function counterXp(c){return Math.floor(c.meters/10)+Math.floor(c.coins/5)+c.passes+Math.floor(c.score/20);}
@@ -63,7 +63,7 @@ function dailyReadyCount(){return dayTasks(playerProgress.daily.day).filter(k=>p
 function claimDaily(k){
  refreshDaily();
  const task=DAILY_TASKS[k],daily=playerProgress.daily;
- if(state!=='menu'||!task||!dayTasks(daily.day).includes(k)||daily.claimed.includes(k)||daily.counts[k]<task.target)return false;
+ if(state!=='menu'||saveLoading||!task||!dayTasks(daily.day).includes(k)||daily.claimed.includes(k)||daily.counts[k]<task.target)return false;
  const oldXp=playerProgress.xp;daily.claimed.push(k);playerProgress.xp+=task.xp;progressDirty=true;
  if(!saveProgression(true)){daily.claimed.pop();playerProgress.xp=oldXp;progressDirty=true;renderProgression();return false;}
  renderProgression();return true;
