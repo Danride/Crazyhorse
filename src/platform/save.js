@@ -15,12 +15,12 @@ function saveDecode(raw){
  const day=typeof d.progress.daily?.day==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d.progress.daily.day)&&d.progress.daily.day>=localDay()?d.progress.daily.day:localDay();
  const daily=freshDaily(day);if(day===d.progress.daily?.day){for(const k of DAILY_METRICS)daily.counts[k]=Math.min(DAILY_TASKS[k].target,saveInt(d.progress.daily.counts?.[k]));daily.claimed=Array.isArray(d.progress.daily.claimed)?[...new Set(d.progress.daily.claimed.filter(k=>dayTasks(day).includes(k)&&daily.counts[k]>=DAILY_TASKS[k].target))]:[];}
  const levels={};for(const k of upgradeKeys)levels[k]=saveInt(d.levels[k],5);
- return {version:2,stamp:x.stamp,data:{wallet:saveInt(d.wallet),best:saveInt(d.best),levels,owned,selected:owned.includes(d.selected)?d.selected:FREE_SKIN,progress:{xp:saveInt(d.progress.xp),daily},revive:normalizeReviveDaily(d.revive),quality:['auto','low','high'].includes(d.quality)?d.quality:'auto'}};
+ return {version:2,stamp:x.stamp,data:{wallet:saveInt(d.wallet),best:saveInt(d.best),levels,owned,selected:owned.includes(d.selected)?d.selected:FREE_SKIN,progress:{xp:saveInt(d.progress.xp),daily},revive:normalizeReviveDaily(d.revive),insurance:saveInt(d.insurance,1000000),quality:['auto','low','high'].includes(d.quality)?d.quality:'auto'}};
  }catch(e){return null;}
 }
-function saveCapture(){return {wallet:saveInt(wallet),best:saveInt(best),levels:{...horseLevels},owned:[...ownedSkins].filter(isActiveSkin).sort((a,b)=>a-b),selected:ownsSkin(selectedSkin)?selectedSkin:FREE_SKIN,progress:JSON.parse(JSON.stringify(playerProgress)),revive:normalizeReviveDaily(reviveDaily),quality:qualityMode};}
+function saveCapture(){return {wallet:saveInt(wallet),best:saveInt(best),levels:{...horseLevels},owned:[...ownedSkins].filter(isActiveSkin).sort((a,b)=>a-b),selected:ownsSkin(selectedSkin)?selectedSkin:FREE_SKIN,progress:JSON.parse(JSON.stringify(playerProgress)),revive:normalizeReviveDaily(reviveDaily),insurance:saveInt(insuranceCount,1000000),quality:qualityMode};}
 function saveApply(s){
- const d=s.data;wallet=d.wallet;best=recordSaved=d.best;horseLevels={...d.levels};ownedSkins=new Set(d.owned);selectedSkin=previewSkin=d.selected;playerProgress=JSON.parse(JSON.stringify(d.progress));reviveDaily=normalizeReviveDaily(d.revive);progressDirty=false;runProgressSnapshot=null;qualityMode=d.quality;quality=qualityMode==='low'||(qualityMode==='auto'&&mobile)?0:2;
+ const d=s.data;wallet=d.wallet;best=recordSaved=d.best;horseLevels={...d.levels};ownedSkins=new Set(d.owned);selectedSkin=previewSkin=d.selected;playerProgress=JSON.parse(JSON.stringify(d.progress));reviveDaily=normalizeReviveDaily(d.revive);insuranceCount=saveInt(d.insurance,1000000);updateInsuranceHUD();progressDirty=false;runProgressSnapshot=null;qualityMode=d.quality;quality=qualityMode==='low'||(qualityMode==='auto'&&mobile)?0:2;
  if(vkGameReady){syncWalletUI();$('best').textContent=best;$('menuBest').textContent=best;$('previewName').textContent=skinNames[selectedSkin];$('qualitySelect').value=qualityMode;renderProgression();renderUpgrades();if($('mainMenu').dataset.pane==='skins')renderSkinCatalog();resize();clearChunks();}
 }
 function saveWriteLocal(s){
@@ -34,7 +34,7 @@ function saveInitLocal(){
  if(saved){saveApply(saved);saveCurrent=saved;}
  else{
   // Old saves had no account scope. Migrate once, then never copy them to another account.
-  if(account==='vk-local'||owner&&owner!==account){wallet=best=recordSaved=0;horseLevels={turn:0,jump:0,stability:0};ownedSkins=new Set([FREE_SKIN]);selectedSkin=previewSkin=FREE_SKIN;playerProgress={xp:0,daily:freshDaily(localDay())};reviveDaily=normalizeReviveDaily(null);qualityMode='auto';quality=mobile?0:2;}
+  if(account==='vk-local'||owner&&owner!==account){wallet=best=recordSaved=0;horseLevels={turn:0,jump:0,stability:0};ownedSkins=new Set([FREE_SKIN]);selectedSkin=previewSkin=FREE_SKIN;playerProgress={xp:0,daily:freshDaily(localDay())};reviveDaily=normalizeReviveDaily(null);insuranceCount=0;updateInsuranceHUD();qualityMode='auto';quality=mobile?0:2;}
   saveCurrent={version:2,stamp:0,data:saveCapture()};
  }
  try{if(!owner&&account!=='vk-local')localStorage.setItem(SAVE_LEGACY_OWNER,account);}catch(e){}

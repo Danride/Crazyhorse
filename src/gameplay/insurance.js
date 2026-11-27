@@ -1,0 +1,48 @@
+'use strict';
+// Adapted from the supplied Royal_Insurance_Scroll_Optimized.glb:
+// original parchment and ribbon triangulation, original roller profiles,
+// original front/reverse artwork downsampled into a single 96x280 atlas.
+const INSURANCE_CHANCE=.0075;
+let insuranceCount=0,insuranceMesh=null,insuranceTexture=null,insuranceTextureLoading=false;
+const insuranceArtwork='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';
+const insuranceParchment=['rP+X/wIArP+c/wIAt/+W/wIAs/+T/wIAwf+P/wIAvP+S/wIAzv+N/wIAtf+w/wIA2v+O/wIA6/+M/wIAsv/L/wIA/P+O/wIACACM/wIAFgCO/wIAJQCM/wIASwDI/wIAMwCN/wIARACM/wIAUgCd/wIATgCT/wIASwCP/wIAUwCW/wIAVQCk/wIAUACu/wIATAB2AAIAUABwAAIATQBlAAIAQwB+AAIATQBhAAIAtv9XAAIAvf9+AAIAuP92AAIAtf9yAAIAtP9tAAIArf9lAAIAsP9qAAIArv9fAAIAq//u/wIArf/1/wIArv/p/wIArv+k/wIAsv+r/wIAsf+1/wIAsP/G/wIArf/Q/wIArv/a/wIATwDq/wIATgDO/wIATQDD/wIAUAC2/wIAUAC9/wIAUwDT/wIAUgDb/wIAUwABAAIAUgD5/wIAUAAHAAIAVQA5AAIAUgA0AAIAUgBBAAIAUwBVAAIAUgBOAAIAUQBcAAIAUgBqAAIATAAvAAIAsv9LAAIArv9SAAIAs/9cAAIArf8/AAIArv9GAAIArv85AAIArP8RAAIArv8VAAIAsP8KAAIArf/9/wIAsP8FAAIAUwDy/wIAUwDk/wIAtP8ZAAIATwApAAIAUwAbAAIAUwARAAIAVAAjAAIAUwBJAAIAtP8cAAIAsP8rAAIArf8yAAIArv8lAAIAsP8fAAIArf/i/wIArP/U/wIArf+//wIArv+5/wIA','AgEAAwIABgUEBwUGCAcGBwgJCgcJCwoJDQsMDw0OEA8OEhARExIRFBMREhMVFxIWGhkYGxoYHBobHRwbHh0bHx0eIR8gJCMiJyYlAigBKSgCBykCBQcCKyoHCisHLSwKJy0KDycKCw8KDQ8LLicPLy4PMTAPEDEPFzEQEhcQMjAxNC8zNzY1Ojk4PTw7GRo+PD0cPzwcHT8cQD8dQUAdIUIdHyEdI0IhJEIjQERDRUBDSEdGJkpJJ0omLkonN0ouNjcuSzYuNEwuLzQuTUo3P003Tj83T043UE83Tk9ROj85PD86Ujw6U00/VFM/QFQ/RVRAVVRFV1RWSE1HSk1IVFdTWC0nLC1ZKitaWypa'];
+const insuranceRibbon=['IgBr/wwAJQB7/wwANAB2/wwAQgBs/wwAQQB5/wwAPwCS/wIAQACO/wYAJwCO/wYAJwCS/wIAQACI/wwAJgCI/wwA','AgEABAIDBwYFCAcFCQYHCgkHAgoBCQoCBAkC'];
+function insuranceBytes(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
+function makeInsuranceMesh(){
+ const out=[];
+ const tri=(a,b,c,mat)=>{for(const p of [a,b,c])out.push([p[0],p[1],p[2],mat]);};
+ function panel(data,depth,back,edge){
+  const bytes=insuranceBytes(data[0]),v=new DataView(bytes.buffer),pos=[];
+  for(let i=0;i<bytes.length;i+=6)pos.push([v.getInt16(i,true)*.01,v.getInt16(i+2,true)*.01,v.getInt16(i+4,true)*.01]);
+  const ix=insuranceBytes(data[1]),rear=pos.map(p=>[p[0],p[1],p[2]-depth]),edges=new Map();
+  for(let i=0;i<ix.length;i+=3){const a=ix[i],b=ix[i+1],c=ix[i+2];tri(pos[a],pos[b],pos[c],0);tri(rear[c],rear[b],rear[a],back);for(const [x,y] of [[a,b],[b,c],[c,a]]){const k=Math.min(x,y)+':'+Math.max(x,y);if(edges.has(k))edges.delete(k);else edges.set(k,[x,y]);}}
+  for(const [a,b] of edges.values()){tri(pos[a],rear[a],rear[b],edge);tri(pos[a],rear[b],pos[b],edge);}
+ }
+ panel(insuranceParchment,.028,1,2);panel(insuranceRibbon,.009,3,3);
+ const top=[[-1.05,0],[-.954,.095],[-.927,.056],[-.892,.069],[-.877,.144],[-.831,.175],[-.781,.186],[-.738,.178],[-.704,.132],[-.681,.106],[-.642,.118],[-.615,.11],[-.569,.114],[-.438,.103],[-.238,.095],[0,.095],[.269,.095],[.488,.103],[.604,.114],[.646,.106],[.673,.118],[.704,.137],[.723,.178],[.773,.186],[.812,.171],[.858,.137],[.885,.076],[.919,.095],[.946,.069],[1.035,0]];
+ const bottom=[[-1.042,0],[-.954,.088],[-.927,.053],[-.888,.069],[-.869,.129],[-.827,.163],[-.777,.171],[-.731,.159],[-.696,.121],[-.669,.102],[-.619,.11],[-.538,.121],[-.373,.11],[-.212,.11],[0,.11],[.212,.102],[.419,.106],[.608,.11],[.681,.11],[.715,.136],[.746,.167],[.8,.174],[.85,.155],[.888,.121],[.915,.076],[.946,.091],[.973,.061],[1.065,0]];
+ function roller(profile,y){const N=14,point=(r,k)=>[r[0],y+r[1]*Math.cos(k*2*Math.PI/N),r[1]*.75*Math.sin(k*2*Math.PI/N)];for(let i=0;i<profile.length-1;i++)for(let k=0;k<N;k++){const a=point(profile[i],k),b=point(profile[i+1],k),c=point(profile[i+1],k+1),d=point(profile[i],k+1);tri(a,b,c,0);tri(a,c,d,0);}}
+ roller(top,1.342);roller(bottom,-1.25);
+ return out;
+}
+function ensureInsuranceTexture(){
+ if(insuranceTexture||insuranceTextureLoading||typeof Image==='undefined')return;
+ insuranceTextureLoading=true;const image=new Image();
+ image.onload=()=>{try{const tex=gl.createTexture();gl.useProgram(prog);gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,tex);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.uniform1i(gl.getUniformLocation(prog,'insuranceMap'),2);gl.activeTexture(gl.TEXTURE0);insuranceTexture=tex;}catch(e){gl.activeTexture(gl.TEXTURE0);console.warn('[Insurance texture]',e);}};
+ image.onerror=()=>console.warn('[Insurance] Artwork failed to decode');
+ image.src='data:image/webp;base64,'+insuranceArtwork;
+}
+function drawInsurance(c){
+ const z=c.d-distance;if(c.dead||z<-8||z>Math.min(155,weatherFar()+10))return;
+ ensureInsuranceTexture();const x=c.x,y=c.y+.10+Math.sin(nowTime*3.1+c.spin)*.10,s=.34,yaw=nowTime*1.7+c.spin;
+ if(!insuranceMesh)insuranceMesh=makeInsuranceMesh();
+ const fallback=[[.85,.65,.36],[.72,.52,.31],[.57,.37,.20],[.47,.13,.10]];
+ placeModel(x,z,yaw,()=>{for(const p of insuranceMesh){const [a,b,d,mat]=p;let paint=fallback[mat];if(insuranceTexture&&mat<2){const u=clamp(.5+a*.4642857,.005,.995),v=clamp(.512195-b*.317073,.005,.995);paint=[u,(mat+v)*.5,-3];}vertex([x+a*s,y+b*s,z+d*s],paint);}});
+}
+function updateInsuranceHUD(){const el=$('insuranceCount');if(el)el.textContent=String(insuranceCount);}
+function collectInsurance(c){
+ if(c.dead)return false;
+ const old=insuranceCount;insuranceCount++;
+ if(!saveCommit()){insuranceCount=old;return false;}
+ c.dead=true;updateInsuranceHUD();coinChime();return true;
+}

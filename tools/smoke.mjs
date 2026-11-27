@@ -21,6 +21,13 @@ runInContext(bootstrap,vm,{filename:'index-bootstrap.js'});
 for(const p of scripts)runInContext(read(p),vm,{filename:p});
 const run=s=>runInContext(s,vm);
 assert.equal(run('state'),'menu');
+assert(run('INSURANCE_CHANCE===.0075&&insuranceCount===0&&saveDecode(JSON.stringify(saveCurrent)).data.insurance===0'));
+assert(run('(()=>{const m=makeInsuranceMesh();return m.length>1000&&m.length%3===0&&m.every(p=>p.length===4&&p.every(Number.isFinite))})()'));
+assert(run('(()=>{const old=coins,rand=Math.random;coins=[];try{Math.random=()=>0;spawnCoinLine(100000,12,0,2.5,0,0,true);return coins.length===12&&coins.filter(c=>c.insurance).length===1;}finally{coins=old;Math.random=rand;}})()'));
+assert(run('(()=>{const old=insuranceCount,c={insurance:true,dead:false},oldCoins=coinCount,oldWallet=wallet;collectCoin(c);const ok=c.dead&&insuranceCount===old+1&&coinCount===oldCoins&&wallet===oldWallet&&saveDecode(JSON.stringify(saveCurrent)).data.insurance===old+1;collectCoin(c);const once=insuranceCount===old+1;insuranceCount=old;saveCommit();updateInsuranceHUD();return ok&&once;})()'));
+assert(run('(()=>{const d=JSON.parse(JSON.stringify(saveCurrent));delete d.data.insurance;return saveDecode(d).data.insurance===0;})()'));
+assert(run('(()=>{const old=insuranceCount,used=reviveDaily.used;insuranceCount=1;state="over";saveCommit();const ok=requestInsuranceRevive()&&insuranceCount===0&&reviveDaily.used===used&&state==="intro"&&invuln===3;state="menu";reviveIntro=false;insuranceCount=old;saveCommit();updateInsuranceHUD();return ok;})()'));
+
 assert(run('landscapeHudFor(844,390,true)&&landscapeHudFor(568,320,false)&&!landscapeHudFor(390,844,true)&&!landscapeHudFor(1920,1080,false)&&!landscapeHudFor(1280,480,false)'));
 run('innerWidth=844;innerHeight=390;resize()');assert(run('$("game").classList.contains("landscapeHud")'));
 run('innerWidth=390;innerHeight=844;resize()');assert(run('!$("game").classList.contains("landscapeHud")'));

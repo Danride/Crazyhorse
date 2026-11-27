@@ -12,14 +12,16 @@ function mergeReviveDaily(a,b,day=localDay()){
 }
 function reviveRemaining(){reviveDaily=normalizeReviveDaily(reviveDaily);return REVIVE_DAILY_LIMIT-reviveDaily.used;}
 function reviveAvailable(){return vkReady&&!saveLoading&&(saveLocalOK||saveCloudRead)&&reviveRemaining()>0;}
+function insuranceReviveAvailable(){return insuranceCount>0&&!saveLoading&&(saveLocalOK||saveCloudRead);}
 function renderReviveOffer(){
  const end=state==='over',host=$('reviveOffer'),btn=$('reviveAd'),left=reviveRemaining();
  host.hidden=!end;
  if(!end)return;
- $('reviveCount').textContent='Сегодня осталось: '+left+' из '+REVIVE_DAILY_LIMIT;
- btn.disabled=reviveBusy||!reviveAvailable();
- btn.textContent=reviveBusy?'Проверяем рекламу…':left===0?'Лимит на сегодня исчерпан':'▶  Продолжить за рекламу';
- $('reviveStatus').textContent=reviveMessage||(!vkReady?'Доступно в VK при подключении рекламы.':!saveLocalOK&&!saveCloudRead?'Хранилище недоступно.':'');
+ const insured=insuranceCount>0;
+ $('reviveCount').textContent=insured?'Страховок: '+insuranceCount+' · без рекламы':'Сегодня осталось: '+left+' из '+REVIVE_DAILY_LIMIT;
+ btn.disabled=reviveBusy||!(insured?insuranceReviveAvailable():reviveAvailable());
+ btn.textContent=reviveBusy?'Проверяем продолжение…':insured?'Продолжить за страховку':left===0?'Лимит на сегодня исчерпан':'▶  Продолжить за рекламу';
+ $('reviveStatus').textContent=reviveMessage||(insured?(!insuranceReviveAvailable()?'Хранилище недоступно.':'Будет использована одна страховка.'):!vkReady?'Доступно в VK при подключении рекламы.':!saveLocalOK&&!saveCloudRead?'Хранилище недоступно.':'');
  $('start').disabled=reviveBusy;$('backMenu').disabled=reviveBusy;
 }
 function reviveTick(){
@@ -58,4 +60,10 @@ async function requestRewardedRevive(){
   saveFlush();resumed=resumeRewardedRun();return resumed;
  }finally{reviveBusy=false;if(!resumed)renderReviveOffer();}
 }
-$('reviveAd').onclick=requestRewardedRevive;
+function requestInsuranceRevive(){
+ if(state!=='over'||reviveBusy||!insuranceReviveAvailable())return false;
+ reviveBusy=true;reviveMessage='';let resumed=false;
+ try{insuranceCount--;if(!saveCommit()){insuranceCount++;reviveMessage='Не удалось сохранить продолжение.';return false;}saveFlush();updateInsuranceHUD();resumed=resumeRewardedRun();return resumed;}
+ finally{reviveBusy=false;if(!resumed)renderReviveOffer();}
+}
+$('reviveAd').onclick=()=>insuranceCount>0?requestInsuranceRevive():requestRewardedRevive();

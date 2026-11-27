@@ -199,3 +199,10 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
  #game.landscapeHud #speechLayer .speechBubble{top:calc(var(--run-hud-top) + 66px)!important;font-size:10px;padding:4px 6px}
  #game.landscapeHud #passWarn{bottom:calc(56px + var(--safe-b));font-size:9px}
 }
+
+/* Rare royal insurance, beside the coin count without obstructing the road. */
+#runCoinHud .insuranceHud{display:inline-flex;align-items:center;gap:3px;margin-left:5px;padding-left:7px;border-left:1px solid #e8c68b80;color:#ffe9b2;white-space:nowrap}
+#runCoinHud .insuranceHud svg{width:18px;height:20px;flex:none;filter:drop-shadow(0 1px 2px #302219)}
+@media (orientation:portrait) and (max-width:760px){#runCoinHud{flex-wrap:wrap;justify-content:flex-end;max-width:90px}#runCoinHud .insuranceHud{flex-basis:100%;justify-content:flex-end;border-left:0;margin-left:0;padding-left:0;font-size:15px}}
+#game.landscapeHud #runCoinHud .insuranceHud{font-size:15px;gap:3px;margin-left:3px;padding-left:5px}
+#game.landscapeHud #runCoinHud .insuranceHud svg{width:15px;height:17px}
