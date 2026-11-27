@@ -53,7 +53,7 @@ function pressTouchPointer(id,k,button){
 addEventListener('keydown',e=>{
  if(state==='menu'&&(e.target?.tagName==='SELECT'||e.target?.tagName==='BUTTON'))return;
  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space','Enter','Escape','KeyW','KeyA','KeyS','KeyD','KeyR','ShiftLeft','ShiftRight'].includes(e.code))e.preventDefault();
- if(e.repeat)return;
+ if(e.repeat||reviveBusy)return;
  if(state==='running'&&['ArrowLeft','ArrowRight','KeyA','KeyD','Space'].includes(e.code)){keyboardKeys.add(e.code);updateControlKey(e.code);if(e.code==='Space')jumpQueued=true;}
  if(e.code==='Enter'&&state!=='running')start();
  if(e.code==='Escape'){if(state==='running')pause();else if(state==='paused')start();else if(state==='menu')showMenuPane('home');}

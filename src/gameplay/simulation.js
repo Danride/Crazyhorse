@@ -22,7 +22,7 @@ function update(dt){prevJumpY=jumpY;prevPlayerX=px;prevDistance=distance;prevPla
  c.lane=clamp(Math.floor((c.x+edge)/laneW),0,5);
  for(let o of obstacles){if(npcObstacleContact(c,o)){killNPC(c);break;}}
  if(!c.dead&&holes.some(h=>npcPitContact(c,h)))killNPC(c);if(c.dead)continue;
- const impact=playerContact(c);if(impact===3&&invuln<=0){killNPC(c);neigh(1);lose('Столкновение с '+(['всадником','каретой','повозкой','быком'][c.kind]));return;}if(impact===1||impact===2)applyNpcImpact(c,impact);
+ const impact=playerContact(c);if(impact===3&&invuln<=0){killNPC(c);neigh(1);lose('Столкновение с '+(['всадником','каретой','повозкой','быком'][c.kind]));return;}if(invuln<=0&&(impact===1||impact===2))applyNpcImpact(c,impact);
  const npcLabel=npcComboEvent(c,oldNpcX,oldNpcZ,px,prevPlayerX,speed,jumpY>.05);if(npcLabel){queueNpcCombo(c,npcLabel);if(npcLabel==='ПОДРЕЗАЛ')registerPlayerCut(c);}
  if(c.z>12&&c.passed)c.passed=false;if(c.z<-5&&!c.passed){c.passed=true;passes++;if(speed*3.6>42&&Math.abs(c.x-px)<4.4){notice('ЛОВКИЙ ОБГОН')}}
  }

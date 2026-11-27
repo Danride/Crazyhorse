@@ -7,4 +7,4 @@ let html=read('index.html');
 html=html.replace(/<link rel="stylesheet" href="([^"\n]+)">/g,(_,p)=>'<style>\n'+read(p.split('?')[0])+'\n</style>');
 html=html.replace(/<script src="([^"\n]+)"><\/script>/g,(_,p)=>'<script>\n'+read(p.split('?')[0])+'\n</script>');
 mkdirSync(resolve(root,'dist'),{recursive:true});
-const out=resolve(root,'dist/Crazy-Horse-v3.6.2.html');writeFileSync(out,html);console.log(out);
+const out=resolve(root,'dist/Crazy-Horse-v3.7.0.html');writeFileSync(out,html);console.log(out);
