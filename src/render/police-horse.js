@@ -36,7 +36,7 @@ function loadPoliceAsset(){
  try{
   if(window.POLICE_HORSE_ASSET){uploadPoliceAsset(window.POLICE_HORSE_ASSET);return;}
   if(typeof fetch!=='function')return;
-  fetch('assets/npc/police-horse.json?v=3.7.3').then(r=>r.ok?r.json():null).then(a=>{if(a)uploadPoliceAsset(a);}).catch(e=>console.warn('[Police horse] Using lightweight fallback',e));
+  fetch('assets/npc/police-horse.json?v=3.7.4').then(r=>r.ok?r.json():null).then(a=>{if(a)uploadPoliceAsset(a);}).catch(e=>console.warn('[Police horse] Using lightweight fallback',e));
  }catch(e){console.warn('[Police horse] Using lightweight fallback',e);}
 }
 function policeBeaconPhase(){return Math.floor(((nowTime%.96)+.96)%.96/.12);}

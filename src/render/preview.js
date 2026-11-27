@@ -80,6 +80,9 @@ function renderPreview(){
  for(let i=0;i<24;i++){let x=(hash(i*13+1)*2-1)*5.1,y=.2+hash(i*23+4)*3.9+Math.sin(menuAngle*.7+i)*.13,z=3+hash(i*37+8)*9;let s=.018+hash(i)*.012;box(x+Math.sin(menuAngle*.3+i)*.13,y,z,s,s,s,col('dcb17a'));}
  gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.vertexAttribPointer(ap,3,gl.FLOAT,false,24,0);gl.vertexAttribPointer(ac,3,gl.FLOAT,false,24,12);gl.bufferData(gl.ARRAY_BUFFER,verts.subarray(0,n),gl.DYNAMIC_DRAW);
  gl.uniform3f(ul,f/aspect,f,0);gl.uniform4f(uc,0,small?2.0:2.55,0,small?.18:.22);gl.drawArrays(gl.TRIANGLES,0,n/6);
- const yaw=-.92+Math.sin(menuAngle*.35)*.12;queueHorse(0,6.3,yaw,previewSkin,menuAngle*.25,0,Math.sin(menuAngle*.85)*.09,false);drawHorses();
+ const yaw=-.92+Math.sin(menuAngle*.35)*.12,ready=horseAssetReady(previewSkin);let model=null;
+ if(ready)model=getHorseMesh(previewSkin);
+ const loading=$('previewLoading');if(loading){loading.hidden=!!model&&!model.fallback;loading.textContent=failedHorseUploads.has(previewSkin)?'Ошибка модели. Перезагрузите игру.':'Загрузка модели…';}
+ if(model&&!model.fallback){queueHorse(0,6.3,yaw,previewSkin,menuAngle*.25,0,Math.sin(menuAngle*.85)*.09,false);drawHorses();}
  gl.disable(gl.SCISSOR_TEST);gl.uniform2f(uFogRange,125,580);
 }

@@ -73,8 +73,9 @@ function skinCardArt(i){
 }
 function formatSkinPrice(n){return Number(n).toLocaleString('ru-RU');}
 function renderSkinCatalog(){
- const ids=catalogIds();
+ const ids=catalogIds(),scroll=$('skinButtons').scrollTop||0;
  $('skinButtons').innerHTML=ids.map(i=>'<button type="button" class="horseListing rarity-'+skinRarity[i]+(i===previewSkin?' active':'')+'" data-skin="'+i+'" aria-pressed="'+(i===previewSkin)+'"><div class="horseArt">'+skinCardArt(i)+'<span class="horseRarity">'+rarityNames[skinRarity[i]]+'</span></div><div class="horseListingBody"><b>'+skinNames[i]+'</b><span class="horsePrice">'+(ownsSkin(i)?(i===selectedSkin?'Выбран':i===FREE_SKIN?'Бесплатно':'В конюшне'):'◆ '+formatSkinPrice(skinPrices[i]))+'</span></div></button>').join('')||'<p class="catalogEmpty">В этой категории пока нет лошадей.</p>';
+ $('skinButtons').scrollTop=scroll;
  document.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>previewChoice(Number(b.dataset.skin)));
  const i=previewSkin,owned=ownsSkin(i),action=$('skinAction');
  $('catalogCount').textContent=ownedSkins.size+' / '+skinNames.length;

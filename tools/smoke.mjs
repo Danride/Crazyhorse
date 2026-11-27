@@ -36,10 +36,13 @@ assert.equal(run('startupError'),'');
 // First paint must work with NO large assets present. Then validate full model path.
 assert(run('horseData.length===0&&newHorseData.shared.filter(Boolean).length===0'));
 assert(run('getHorseMesh(FREE_SKIN).fallback===true'));
+assert(run('document.getElementById("previewLoading").hidden===false'));
 assert(run('!initPropAssets()&&!initBarrelAssets()'));
 const lazy=JSON.parse(read('src/platform/assets.js').match(/const LAZY_GAME_ASSETS=(\[[^\n]+\]);/)[1]);
 for(const p of lazy)runInContext(read(p),vm,{filename:p});
 assert(run('!getHorseMesh(FREE_SKIN).fallback'));
+assert(run('horseData[3].n===1396&&horseData[0].n===1436&&horseData[3].frameEncoding==="lz4-delta2"'));
+run('renderPreview()');assert(run('document.getElementById("previewLoading").hidden===true'));
 assert(run('(()=>{for(let k=0;k<4;k++){resetBiomeRoute(k,1);distance=0;resetDensity();for(let i=0;i<3600;i++)varyDensity(1/60);let [a,b]=BIOME_TRAFFIC_RANGES[k];if(trafficDensity<a||trafficDensity>b)return false;}return true;})()'));
 assert(run('(()=>{resetBiomeRoute(3,1);distance=0;crossers=[];if(!spawnFlock(120))return false;const n=crossers.length;return n>=14&&n<=16&&!spawnFlock(140)&&crossers.length===n;})()'));
 assert(run('(()=>{state="running";px=0;vx=0;beginDrag(1,80);moveDrag(1,120);let ok=dragSteeringDirection(6)>0;moveDrag(1,40);ok=ok&&dragSteeringDirection(6)<0;finishDrag(1);state="menu";return ok&&dragSteeringDirection(6)===0;})()'));

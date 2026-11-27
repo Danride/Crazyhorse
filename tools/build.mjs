@@ -11,4 +11,4 @@ html=html.replace(/<script src="src\/main\.js[^"\n]*"><\/script>/,m=>lazy.map(p=
 html=html.replace(/<script src="([^"\n]+)"><\/script>/g,(_,p)=>'<script>\n'+read(p.split('?')[0])+'\n</script>');
 if(existsSync(resolve(root,'assets/npc/police-horse.json')))html=html.replace('</head>','<script>window.POLICE_HORSE_ASSET='+read('assets/npc/police-horse.json')+';</script></head>');
 mkdirSync(resolve(root,'dist'),{recursive:true});
-const out=resolve(root,'dist/Crazy-Horse-v3.7.3.html');writeFileSync(out,html);console.log(out);
+const out=resolve(root,'dist/Crazy-Horse-v3.7.4.html');writeFileSync(out,html);console.log(out);
