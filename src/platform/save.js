@@ -24,19 +24,20 @@ function saveApply(s){
  if(vkGameReady){syncWalletUI();$('best').textContent=best;$('menuBest').textContent=best;$('previewName').textContent=skinNames[selectedSkin];$('qualitySelect').value=qualityMode;renderProgression();renderUpgrades();if($('mainMenu').dataset.pane==='skins')renderSkinCatalog();resize();clearChunks();}
 }
 function saveWriteLocal(s){
+ if(!saveLocalKey){saveLocalOK=false;return false;}
  try{localStorage.setItem(saveLocalKey,JSON.stringify(s));saveLocalOK=true;return true;}catch(e){saveLocalOK=false;return false;}
 }
 function saveSetGate(on){saveLoading=on;const b=$('menuStart');if(b)b.disabled=on;}
 function saveInitLocal(){
- const account=saveAccount();saveLocalKey=SAVE_PREFIX+account;
- let saved=null,owner=null;try{saved=saveDecode(localStorage.getItem(saveLocalKey));owner=localStorage.getItem(SAVE_LEGACY_OWNER);}catch(e){}
+ const account=saveAccount();saveLocalKey=account==='vk-local'?null:SAVE_PREFIX+account;
+ let saved=null,owner=null;try{saved=saveLocalKey?saveDecode(localStorage.getItem(saveLocalKey)):null;owner=localStorage.getItem(SAVE_LEGACY_OWNER);}catch(e){}
  if(saved){saveApply(saved);saveCurrent=saved;}
  else{
   // Old saves had no account scope. Migrate once, then never copy them to another account.
-  if(owner&&owner!==account){wallet=best=recordSaved=0;horseLevels={turn:0,jump:0,stability:0};ownedSkins=new Set([FREE_SKIN]);selectedSkin=previewSkin=FREE_SKIN;playerProgress={xp:0,daily:freshDaily(localDay())};qualityMode='auto';quality=mobile?0:2;}
+  if(account==='vk-local'||owner&&owner!==account){wallet=best=recordSaved=0;horseLevels={turn:0,jump:0,stability:0};ownedSkins=new Set([FREE_SKIN]);selectedSkin=previewSkin=FREE_SKIN;playerProgress={xp:0,daily:freshDaily(localDay())};qualityMode='auto';quality=mobile?0:2;}
   saveCurrent={version:2,stamp:0,data:saveCapture()};
  }
- try{if(!owner)localStorage.setItem(SAVE_LEGACY_OWNER,account);}catch(e){}
+ try{if(!owner&&account!=='vk-local')localStorage.setItem(SAVE_LEGACY_OWNER,account);}catch(e){}
  saveWriteLocal(saveCurrent);
  if(vkEnvironment()){saveGateUntil=Date.now()+6500;saveSetGate(true);}
 }
@@ -44,6 +45,7 @@ function saveCommit(){
  if(!saveCurrent)return false;
  const data=saveCapture(),same=JSON.stringify(data)===JSON.stringify(saveCurrent.data);
  const next=same?saveCurrent:{version:2,stamp:Math.max(Date.now(),saveCurrent.stamp+1),data};
+ if(same&&saveLocalOK)return true;
  const ok=saveWriteLocal(next);
  if(ok||saveCloudRead){saveCurrent=next;return true;}
  return false;
