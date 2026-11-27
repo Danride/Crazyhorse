@@ -9,7 +9,9 @@ function pumpGameAssets(){
  while(assetActive<limit&&assetQueue.length){
   const job=assetQueue.shift();assetActive++;
   const script=document.createElement('script');script.async=true;script.dataset.lazyGameAsset='1';script.src=job.path+'?asset=1';
-  const finish=ok=>{assetActive--;job.done=true;if(!ok){assetRequests.delete(job.path);assetRetries.set(job.path,Date.now()+10000);script.remove?.();console.warn('[Crazy Horse] Optional asset failed:',job.path);}job.resolve(ok);pumpGameAssets();};
+  let released=false;const release=()=>{if(!released){released=true;assetActive--;}};
+  const timer=setTimeout(()=>{if(job.done)return;release();console.warn('[Crazy Horse] Optional asset still downloading:',job.path);pumpGameAssets();},25000);
+  const finish=ok=>{if(job.done)return;clearTimeout(timer);release();job.done=true;if(!ok){assetRequests.delete(job.path);assetRetries.set(job.path,Date.now()+10000);script.remove?.();console.warn('[Crazy Horse] Optional asset failed:',job.path);}job.resolve(ok);pumpGameAssets();};
   script.onload=()=>finish(true);script.onerror=()=>finish(false);
   try{document.head.appendChild(script);}catch(e){finish(false);}
  }
