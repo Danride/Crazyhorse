@@ -40,7 +40,7 @@ function resumeRewardedRun(){
  runProgressSnapshot=currentProgressCounters();lossReason='';crashLine='';vkHidden=false;
  state='intro';reviveIntro=true;introLeft=1.65;
  $('overlay').dataset.kind='revive';$('mode').textContent='ВТОРОЙ ШАНС';$('heading').textContent='Снова в седле!';$('description').textContent='3 секунды защиты после старта';$('resultStats').hidden=true;$('reviveOffer').hidden=true;
- $('start').textContent='ПРИГОТОВЬСЯ…';$('start').disabled=true;$('backMenu').style.display='none';
+ $('start').textContent='ПРИГОТОВЬСЯ…';$('start').disabled=true;$('backMenu').disabled=false;$('backMenu').style.display='none';
  $('overlay').classList.remove('hidden');if(audioOn)initAudio();updateHUD();return true;
 }
 async function requestRewardedRevive(){

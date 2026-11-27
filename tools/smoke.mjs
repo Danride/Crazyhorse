@@ -25,6 +25,8 @@ assert.equal(run('startupReady'),true);
 assert(run('reviveRemaining()===3&&normalizeReviveDaily({day:localDay(),used:99}).used===3'));
 assert(run('mergeReviveDaily({day:localDay(),used:1},{day:localDay(),used:2}).used===2'));
 assert(run('saveDecode(JSON.stringify(saveCurrent)).data.revive.used===0'));
+assert(run('(()=>{let d=localDay();return normalizeReviveDaily({day:"2000-01-01",used:3},d).used===0&&normalizeReviveDaily({day:"2099-01-01",used:2},d).used===2})()'));
+assert(run('!reviveAvailable()'));
 assert(run('saveCurrent.version===2&&saveLocalKey.endsWith("browser")&&!saveLoading'));
 assert(run('saveDecode(JSON.stringify(saveCurrent)).data.owned.includes(FREE_SKIN)'));
 assert.equal(run('saveDecode("broken")'),null);
