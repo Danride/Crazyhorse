@@ -37,7 +37,7 @@ function drawInsurance(c){
  ensureInsuranceTexture();const x=c.x,y=c.y+.10+Math.sin(nowTime*3.1+c.spin)*.10,s=.34,yaw=nowTime*1.7+c.spin;
  if(!insuranceMesh)insuranceMesh=makeInsuranceMesh();
  const fallback=[[.85,.65,.36],[.72,.52,.31],[.57,.37,.20],[.47,.13,.10]];
- placeModel(x,z,yaw,()=>{for(const p of insuranceMesh){const [a,b,d,mat]=p;let paint=fallback[mat];if(insuranceTexture&&mat<2){const u=clamp(.5+a*.4642857,.005,.995),v=clamp(.512195-b*.317073,.005,.995);paint=[u,(mat+v)*.5,-3];}vertex([x+a*s,y+b*s,z+d*s],paint);}});
+ placeModel(x,z,yaw,()=>{for(const p of insuranceMesh){const [a,b,d,mat]=p;let paint=fallback[mat];if(insuranceTexture&&mat<2){const u=clamp(.5+a*.4642857,.005,.995),v=clamp(.512195-b*.317073,.005,.995);paint=[u,(mat+v)*.5,INSURANCE_MATERIAL];}vertex([x+a*s,y+b*s,z+d*s],paint);}});
 }
 function updateInsuranceHUD(){const el=$('insuranceCount');if(el)el.textContent=String(insuranceCount);}
 function collectInsurance(c){

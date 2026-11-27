@@ -51,6 +51,10 @@ assert(run('document.getElementById("previewLoading").hidden===false'));
 assert(run('!initPropAssets()&&!initBarrelAssets()'));
 const lazy=JSON.parse(read('src/platform/assets.js').match(/const LAZY_GAME_ASSETS=(\[[^\n]+\]);/)[1]);
 for(const p of lazy)runInContext(read(p),vm,{filename:p});
+// All existing model vertex colors must bypass the insurance sampler, including textured props.
+assert(run('INSURANCE_MATERIAL===-8&&fs.includes("abs(vColor.z-(-8.0))<0.25")&&fs.includes("else if(vColor.z<-.5)")'));
+assert(run('(()=>{let count=0;for(const m of Object.values(propSource.models)){const colors=new Float32Array(decode64(m.colors).buffer);for(let i=2;i<colors.length;i+=3){const z=colors[i];if(!Number.isFinite(z)||Math.abs(z-INSURANCE_MATERIAL)<.25)return false;if(z<-.5)count++;}}return count>0;})()'));
+
 assert(run('!getHorseMesh(FREE_SKIN).fallback'));
 assert(run('horseData[3].n===1396&&horseData[0].n===1436&&horseData[3].frameEncoding==="lz4-delta2"'));
 run('renderPreview()');assert(run('document.getElementById("previewLoading").hidden===true'));
