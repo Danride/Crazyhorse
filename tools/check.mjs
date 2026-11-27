@@ -9,7 +9,10 @@ const scripts=[...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m=>m[1
 const styles=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)].map(m=>m[1].split('?')[0]);
 assert.equal(new Set(scripts).size,scripts.length);
 assert.equal(scripts.at(-1),'src/main.js');
-for(const p of [...scripts,...styles])assert(existsSync(resolve(root,p)),p);
+const lazy=JSON.parse(readFileSync(resolve(root,'src/platform/assets.js'),'utf8').match(/const LAZY_GAME_ASSETS=(\[[^\n]+\]);/)[1]);
+assert(lazy.every(p=>!scripts.includes(p)));
+for(const p of lazy)new Script(readFileSync(resolve(root,p),'utf8'),{filename:p});
+for(const p of [...scripts,...styles,...lazy])assert(existsSync(resolve(root,p)),p);
 for(const p of scripts)new Script(readFileSync(resolve(root,p),'utf8'),{filename:p});
 const bootstrap=html.match(/<script id="startupBootstrap">([\s\S]*?)<\/script>/)[1];
 assert.equal(bootstrap.trim(),readFileSync(resolve(root,'src/platform/startup.js'),'utf8').trim());

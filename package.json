@@ -1,6 +1,6 @@
 {
   "name": "crazyhorse",
-  "version": "3.7.2",
+  "version": "3.7.3",
   "private": true,
   "scripts": {
     "start": "python -m http.server 8000",

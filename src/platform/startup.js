@@ -7,6 +7,7 @@ function startupPaint(){
  if(bar)bar.style.width=value+'%';
  if(track)track.setAttribute('aria-valuenow',String(value));
  if(retry)retry.hidden=startupReady||!(startupError||startupSlow);
+ const diagnostic=document.getElementById('startupDiagnostic');if(diagnostic){diagnostic.hidden=startupReady||!(startupError||startupSlow);diagnostic.textContent=startupError||('Загрузка задерживается: '+startupStage);}
  if(startupReady)p.hidden=true;
 }
 function startupStep(stage,loaded,total){if(startupReady)return;startupStage=stage;startupLoaded=loaded;startupTotal=total;startupLastStep=Date.now();startupSlow=false;startupPaint();}
@@ -15,6 +16,7 @@ function startupGameReady(){if(startupReady)return;startupReady=true;startupErro
 function startupBridgeStatus(msg){startupBridge=msg;console.info('[Crazy Horse VK]',msg);startupPaint();}
 addEventListener('error',e=>{
  const target=e.target;
+ if(target?.tagName==='SCRIPT'&&target.dataset?.lazyGameAsset)return;
  if(target?.tagName==='SCRIPT'){startupFail('Не загружен файл: '+(target.getAttribute('src')||'script'));return;}
  if(e.message)startupFail('Ошибка игры: '+e.message+(e.filename?' ('+e.filename.split(/[?#]/)[0].split('/').pop().slice(0,100)+':'+e.lineno+')':''));
 },true);
