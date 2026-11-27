@@ -11,14 +11,14 @@ function saveInt(n,max=1e12){return typeof n==='number'&&Number.isFinite(n)?Math
 function saveDecode(raw){
  try{const x=typeof raw==='string'?JSON.parse(raw):raw;if(!x||x.version!==2||!Number.isSafeInteger(x.stamp)||x.stamp<0||!x.data||typeof x.data!=='object')return null;
  const d=x.data;if(!Number.isFinite(d.wallet)||!Number.isFinite(d.best)||!d.levels||!Array.isArray(d.owned)||!d.progress||!Number.isFinite(d.progress.xp))return null;
- const owned=[...new Set([FREE_SKIN,...d.owned.filter(i=>Number.isInteger(i)&&i>=0&&i<skinNames.length)])].sort((a,b)=>a-b);
+ const owned=[...new Set([FREE_SKIN,...d.owned.filter(isActiveSkin)])].sort((a,b)=>a-b);
  const day=typeof d.progress.daily?.day==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d.progress.daily.day)&&d.progress.daily.day>=localDay()?d.progress.daily.day:localDay();
  const daily=freshDaily(day);if(day===d.progress.daily?.day){for(const k of DAILY_METRICS)daily.counts[k]=Math.min(DAILY_TASKS[k].target,saveInt(d.progress.daily.counts?.[k]));daily.claimed=Array.isArray(d.progress.daily.claimed)?[...new Set(d.progress.daily.claimed.filter(k=>dayTasks(day).includes(k)&&daily.counts[k]>=DAILY_TASKS[k].target))]:[];}
  const levels={};for(const k of upgradeKeys)levels[k]=saveInt(d.levels[k],5);
  return {version:2,stamp:x.stamp,data:{wallet:saveInt(d.wallet),best:saveInt(d.best),levels,owned,selected:owned.includes(d.selected)?d.selected:FREE_SKIN,progress:{xp:saveInt(d.progress.xp),daily},revive:normalizeReviveDaily(d.revive),quality:['auto','low','high'].includes(d.quality)?d.quality:'auto'}};
  }catch(e){return null;}
 }
-function saveCapture(){return {wallet:saveInt(wallet),best:saveInt(best),levels:{...horseLevels},owned:[...ownedSkins].sort((a,b)=>a-b),selected:ownedSkins.has(selectedSkin)?selectedSkin:FREE_SKIN,progress:JSON.parse(JSON.stringify(playerProgress)),revive:normalizeReviveDaily(reviveDaily),quality:qualityMode};}
+function saveCapture(){return {wallet:saveInt(wallet),best:saveInt(best),levels:{...horseLevels},owned:[...ownedSkins].filter(isActiveSkin).sort((a,b)=>a-b),selected:ownsSkin(selectedSkin)?selectedSkin:FREE_SKIN,progress:JSON.parse(JSON.stringify(playerProgress)),revive:normalizeReviveDaily(reviveDaily),quality:qualityMode};}
 function saveApply(s){
  const d=s.data;wallet=d.wallet;best=recordSaved=d.best;horseLevels={...d.levels};ownedSkins=new Set(d.owned);selectedSkin=previewSkin=d.selected;playerProgress=JSON.parse(JSON.stringify(d.progress));reviveDaily=normalizeReviveDaily(d.revive);progressDirty=false;runProgressSnapshot=null;qualityMode=d.quality;quality=qualityMode==='low'||(qualityMode==='auto'&&mobile)?0:2;
  if(vkGameReady){syncWalletUI();$('best').textContent=best;$('menuBest').textContent=best;$('previewName').textContent=skinNames[selectedSkin];$('qualitySelect').value=qualityMode;renderProgression();renderUpgrades();if($('mainMenu').dataset.pane==='skins')renderSkinCatalog();resize();clearChunks();}

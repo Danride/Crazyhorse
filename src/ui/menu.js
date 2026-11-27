@@ -5,7 +5,7 @@ function setSkin(i){
  $('previewName').textContent=skinNames[i];return true;
 }
 function previewChoice(i){
- if(!Number.isInteger(i)||i<0||i>=skinNames.length)return;
+ if(!isActiveSkin(i))return;
  previewSkin=i;$('previewName').textContent=skinNames[i];renderSkinCatalog();
 }
 function browseSkin(delta){
@@ -15,7 +15,7 @@ function browseSkin(delta){
  if($('mainMenu').dataset.pane==='skins')previewChoice(i);else setSkin(i);
 }
 function catalogIds(){
- let ids=skinNames.map((_,i)=>i).filter(i=>skinFilter==='all'||(skinFilter==='owned'?ownsSkin(i):!ownsSkin(i)));
+ let ids=ACTIVE_SKIN_IDS.filter(i=>skinFilter==='all'||(skinFilter==='owned'?ownsSkin(i):!ownsSkin(i)));
  if(skinSort==='price')ids.sort((a,b)=>skinPrices[a]-skinPrices[b]);else if(skinSort==='rare')ids.sort((a,b)=>skinRarity[b]-skinRarity[a]||skinPrices[b]-skinPrices[a]);
  return ids;
 }
@@ -23,8 +23,9 @@ function catalogIds(){
 // Cached after first catalog visit; no extra WebGL contexts or animation loops.
 const skinThumbnailCache=new Map();
 function skinCardArt(i){
+ if(!isActiveSkin(i))return '';
  if(skinThumbnailCache.has(i))return skinThumbnailCache.get(i);
- const coat=skinSwatches[i],mane=['#191719','#66646a','#542a1b','#35241d','#573124','#141822','#d2c8bc','#523728','#55565a','#28282a','#eaa03a','#2e1823','#3d5331','#d8b7e5','#2e214c'][i],hoof=i===10?'#f9b743':i===14?'#bc7aef':'#302a29';
+ const coat=skinSwatches[i],mane=['#191719','#66646a','#542a1b','#35241d','#573124','#141822','#d2c8bc','#523728','#55565a',null,'#eaa03a','#2e1823','#3d5331','#d8b7e5','#2e214c'][i],hoof=i===10?'#f9b743':i===14?'#bc7aef':'#302a29';
  const faces=[],cam=[.62,.45,1],len=Math.hypot(...cam),forward=cam.map(v=>v/len),h=Math.hypot(cam[0],cam[2]),right=[cam[2]/h,0,-cam[0]/h],up=[-forward[1]*right[2]*-1,0,0];
  // up = forward cross right, right-handed camera basis.
  up[0]=forward[1]*right[2];up[1]=forward[2]*right[0]-forward[0]*right[2];up[2]=-forward[1]*right[0];
@@ -60,7 +61,6 @@ function skinCardArt(i){
  if(i===5){block(.50,2.22,0,.42,.12,.74,'#4e5964',-.18);block(-.25,.84,.523,.40,.36,.025,'#4e5964',-.27);}
  if(i===7){for(const z of [-.525,.525])block(-.24,.63,z,.53,.70,.025,'#eee0ca',-.27);block(.73,2.03,0,.035,.44,.28,'#eee0ca',-.18);}
  if(i===8){for(const z of [-.525,.525])for(const [x,y,a] of [[-.36,.36,.18],[-.10,.64,.20],[-.38,.98,.14],[.13,.91,.17]])block(x,y,z,a,a,.025,'#c9c6c0');}
- if(i===9){for(const z of [-.525,.525])for(const y of [.23,.53,.83,1.12])block(-.11,y,z,.88,.12,.025,'#343238',-.27);for(const z of [-.449,.449]){block(.26,2.14,z,.10,.31,.025,'#343238',.2);block(.72,1.76,z,.15,.25,.025,'#343238',-.3);}}
  if(i===10){for(let j=0;j<5;j++)block(-.54+j*.10,.97+j*.29,0,.35,.68-j*.045,.70,j%2?'#ffbe44':'#e64c1d',-.35);}
  if(i===11){for(const z of [-.34,.34])block(.01,2.70,z,.20,.72,.20,'#38212c',.36);block(.10,1.01,.525,.38,.16,.03,'#a84443',-.27);}
  if(i===12){for(let j=0;j<4;j++)block(-.47+j*.08,.69+j*.39,0,.37,.31,.91,j%2?'#90a959':'#536a3b',j*.09);block(.28,2.40,0,.25,.21,.56,'#789851');}
@@ -78,7 +78,7 @@ function renderSkinCatalog(){
  $('skinButtons').scrollTop=scroll;
  document.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>previewChoice(Number(b.dataset.skin)));
  const i=previewSkin,owned=ownsSkin(i),action=$('skinAction');
- $('catalogCount').textContent=ownedSkins.size+' / '+skinNames.length;
+ $('catalogCount').textContent=ownedSkins.size+' / '+ACTIVE_SKIN_IDS.length;
  $('skinDetailName').textContent=skinNames[i];$('skinDetailRarity').textContent=rarityNames[skinRarity[i]];
  $('skinDetailPrice').textContent=owned?(i===FREE_SKIN?'Бесплатно':'В конюшне'):'◆ '+formatSkinPrice(skinPrices[i])+' монет';
  action.textContent=i===selectedSkin?'ВЫБРАНО':owned?'ОСЕДЛАТЬ':wallet<skinPrices[i]?'НЕ ХВАТАЕТ '+formatSkinPrice(skinPrices[i]-wallet):'КУПИТЬ · '+formatSkinPrice(skinPrices[i])+' ◆';

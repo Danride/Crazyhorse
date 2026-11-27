@@ -61,7 +61,7 @@ run('showMenuPane("skins")');assert.equal(run('$("mainMenu").dataset.pane'),'ski
 assert.deepEqual(Array.from(run('[0,9,10,1000,2499,2500,6000].map(speedPercentAt)')),[100,100,101,200,349,350,437.5]);
 assert.equal(run('Math.round(START_SPEED*3.6)'),80);
 assert.equal(run('Math.round(START_SPEED*speedPercentAt(3380)/100*3.6)'),350);
-assert.equal(run('Math.round(MAX_SPEED*3.6)'),350);assert.equal(run('skinNames.length'),15);
+assert.equal(run('Math.round(MAX_SPEED*3.6)'),350);assert.equal(run('ACTIVE_SKIN_IDS.length'),14);
 assert.equal(run('TRAFFIC_BASE_COUNT'),30);
 assert(run('(()=>{let p=npcLateralStep(0,0,3.05,1/60);return p.v>0&&p.v<=9.5/60&&p.x>0;})()'));
 assert.equal(run('(()=>{prevPlayerX=px=0;prevPlayerYaw=playerYaw=0;prevJumpY=jumpY=0;return playerContact({kind:0,x:0,z:-6,stepX:0,stepZ:-5,yaw:0,stepYaw:0,actualV:10});})()'),0);
@@ -90,19 +90,23 @@ assert(run('(()=>{let sides=new Set();for(let i=0;i<64;i++){resetBiomeRoute(2,i*
 assert(run('biomeRoute.every((r,i)=>r.length>=500&&r.length<=3000&&(!i||r.kind!==biomeRoute[i-1].kind)&&(!i||r.start===biomeRoute[i-1].end))'));
 assert.equal(run('coinSweep({d:1.6,x:0,y:.82},0,3,0,0,0,0)'),true);
 assert.equal(run('coinSweep({d:1.6,x:4,y:.82},0,3,0,0,0,0)'),false);
-assert.equal(run('newHorseData.models.length'),11);
+assert.equal(run('newHorseData.models.filter(Boolean).length'),10);
+assert(run('newHorseData.models[5]===null&&!isActiveSkin(9)&&!horseAssetReady(9)&&!ownsSkin(9)&&!purchaseSkin(9)'));
+assert(run('newHorseData.models.filter(Boolean).every(m=>[m.frames,m.indices,m.head].every(k=>newHorseData.shared[k]))'));
+assert(run('getHorseMesh(9)===getHorseMesh(FREE_SKIN)'));
+assert(run('(()=>{const s=JSON.parse(JSON.stringify(saveCurrent));s.data.owned=[3,9,10,14];s.data.selected=9;const d=saveDecode(s).data;return d.selected===3&&d.owned.join(",")==="3,10,14"})()'));
 assert.equal(run('skinSwatches.length'),15);
 assert.equal(run('POLICE_MODEL_ID'),15);
 assert(run('!ownsSkin(POLICE_MODEL_ID)&&!purchaseSkin(POLICE_MODEL_ID)'));
 assert(run('(()=>{for(let k=0;k<4;k++){resetBiomeRoute(k,1);distance=0;traffic=[];const a=makeCar(2,100,0),b=makeCar(3,120,0);if(!markPolicePatrol(a)||!a.police||a.modelIndex!==POLICE_MODEL_ID||markPolicePatrol(b))return false;traffic.push(a);if(tryPlayerRevenge(a)||a.rude)return false;}return true})()'));
 assert.equal(run('skinNames.includes("Королевский")||skinNames.includes("Рыцарский")||skinNames.includes("Грибной")'),false);
-assert.deepEqual(Array.from(run('[0,9,10,11,12,13,14,15,16,17].map(migrateHorseSelection)')),[0,9,0,0,10,11,12,13,14,0]);
+assert.deepEqual(Array.from(run('[0,9,10,11,12,13,14,15,16,17].map(migrateHorseSelection)')),[0,3,0,0,10,11,12,13,14,0]);
 assert.equal(run('selectedSkin'),FREE_SKIN_TEST());
 function FREE_SKIN_TEST(){return run('FREE_SKIN');}
 assert(run('!setSkin(0)&&ownedSkins.size===1'));
-run('showMenuPane("skins")');for(let i=0;i<15;i++){run('previewChoice('+i+');renderPreview()');assert.equal(run('previewSkin'),i);assert.equal(run('selectedSkin'),3);}
+run('showMenuPane("skins")');for(const i of Array.from(run('ACTIVE_SKIN_IDS'))){run('previewChoice('+i+');renderPreview()');assert.equal(run('previewSkin'),i);assert.equal(run('selectedSkin'),3);}
 assert(run('Math.min(...skinPrices.filter(p=>p>0))===2000&&skinPrices.filter(p=>p===0).length===1'));
-assert(run('skinNames.every((_,i)=>{const a=skinCardArt(i);return a.includes("<polygon")&&!/NaN|Infinity/.test(a)&&a===skinCardArt(i)})&&skinThumbnailCache.size===15'));
+assert(run('ACTIVE_SKIN_IDS.every(i=>{const a=skinCardArt(i);return a.includes("<polygon")&&!/NaN|Infinity/.test(a)&&a===skinCardArt(i)})&&skinThumbnailCache.size===14'));
 run('wallet=2000;previewChoice(0)');assert(run('activateCatalogSkin()&&ownsSkin(0)&&selectedSkin===0&&wallet===0'));assert(run('!purchaseSkin(0)'));
 assert(run('(()=>{const s=saveDecode(localStorage.getItem(saveLocalKey));return s.data.wallet===wallet&&s.data.owned.includes(0)&&s.data.selected===0})()'));run('showMenuPane("home")');
 for(let b=0;b<4;b++){
@@ -114,4 +118,4 @@ for(let b=0;b<4;b++){
  console.log('zone',b,'distance',run('Math.round(distance)'),'state',run('state'));
  run('mainMenu()');
 }
-console.log('OK: 15 skins, menu and all 4 zones (mock WebGL).');
+console.log('OK: 14 skins, menu and all 4 zones (mock WebGL).');
