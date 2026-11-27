@@ -1,5 +1,22 @@
 'use strict';
-let selectedSkin=0,menuAngle=.4,speechClock=0,lastOrdinary='',lastRude='',cameraView=null;
+const FREE_SKIN=3,SKIN_OWNED_KEY='crazy-horse-owned-skins-v1';
+let selectedSkin=FREE_SKIN,menuAngle=.4,speechClock=0,lastOrdinary='',lastRude='',cameraView=null;
 function migrateHorseSelection(value){let i=Number(value);if(!Number.isInteger(i)||i<0||i>17||i===10||i===11||i===17)return 0;return i>=12?i-2:i;}
 try{let saved=localStorage.getItem('kings-road-skin-v2');selectedSkin=saved===null||saved===undefined?migrateHorseSelection(localStorage.getItem('kings-road-skin')):clamp(Number(saved)||0,0,14)|0;}catch(e){}
 const skinNames=["Вороной","Серый","Рыжий","Гнедой","Каштановый","Обсидиановый","Снежный","Пегий","В яблоках","Зебра","Огненный","Демонический","Лесной","Единорог","Пустотный"];const skinSwatches=["#272727","#a0a0a0","#9b250d","#a66b37","#a45e35","#252a33","#e7e1d5","#bd8f63","#90908d","#d3d0c9","#eb6424","#6c262b","#65823e","#e9ddec","#5b3c83"];
+
+const skinPrices=[150,200,250,0,350,650,550,450,500,900,1500,2200,1250,2800,3500];
+const skinRarity=[0,0,0,0,0,1,1,1,1,2,2,3,2,3,3];
+const rarityNames=['Обычный','Редкий','Эпический','Легендарный'];
+let ownedSkins=new Set([FREE_SKIN]);
+try{const saved=JSON.parse(localStorage.getItem(SKIN_OWNED_KEY)||'[]');if(Array.isArray(saved))for(const i of saved)if(Number.isInteger(i)&&i>=0&&i<skinNames.length)ownedSkins.add(i);}catch(e){}
+if(!ownedSkins.has(selectedSkin))selectedSkin=FREE_SKIN;
+let previewSkin=selectedSkin,skinFilter='all',skinSort='price';
+function ownsSkin(i){return ownedSkins.has(i);}
+function purchaseSkin(i){
+ if(state!=='menu'||!Number.isInteger(i)||i<0||i>=skinNames.length||ownsSkin(i)||wallet<skinPrices[i])return false;
+ const oldWallet=wallet,oldOwned=[...ownedSkins];wallet-=skinPrices[i];ownedSkins.add(i);
+ try{localStorage.setItem('kings-road-wallet',String(wallet));localStorage.setItem(SKIN_OWNED_KEY,JSON.stringify([...ownedSkins]));}
+ catch(e){wallet=oldWallet;ownedSkins=new Set(oldOwned);try{localStorage.setItem('kings-road-wallet',String(oldWallet));localStorage.setItem(SKIN_OWNED_KEY,JSON.stringify(oldOwned));}catch(_){}return false;}
+ return true;
+}

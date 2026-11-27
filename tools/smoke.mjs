@@ -44,11 +44,10 @@ assert.deepEqual(Array.from(run('[0,9,10,1000,2499,2500,6000].map(speedPercentAt
 assert.equal(run('Math.round(START_SPEED*3.6)'),80);
 assert.equal(run('Math.round(START_SPEED*speedPercentAt(3380)/100*3.6)'),350);
 assert.equal(run('Math.round(MAX_SPEED*3.6)'),350);assert.equal(run('skinNames.length'),15);
-assert.equal(run('TRAFFIC_MULTIPLIER'),2);
+assert.equal(run('TRAFFIC_BASE_COUNT'),30);
 assert(run('(()=>{let p=npcLateralStep(0,0,3.05,1/60);return p.v>0&&p.v<=9.5/60&&p.x>0;})()'));
 assert.equal(run('(()=>{prevPlayerX=px=0;prevPlayerYaw=playerYaw=0;prevJumpY=jumpY=0;return playerContact({kind:0,x:0,z:-6,stepX:0,stepZ:-5,yaw:0,stepYaw:0,actualV:10});})()'),0);
-assert.equal(run('CITY_TRAFFIC_REDUCTION'),.75);
-assert.equal(run('Math.round(52*TRAFFIC_MULTIPLIER*CITY_TRAFFIC_MULTIPLIER)'),98);
+assert.equal(run('trafficHardCap(false)'),104);
 assert(run('(()=>{let seen=new Set();for(let i=0;i<64;i++){resetBiomeRoute(-1,i*1234567);seen.add(biomeIndex(0));}return seen.size===4;})()'));
 assert.equal(run('Object.keys(HORSE_AUDIO_SAMPLES).length'),2);
 assert(run('NPC_VOICE_SAMPLES.length>=3&&NPC_VOICE_SAMPLES.every(c=>atob(c.data).length>1000)'));
@@ -77,7 +76,11 @@ assert.equal(run('newHorseData.models.length'),11);
 assert.equal(run('skinSwatches.length'),15);
 assert.equal(run('skinNames.includes("Королевский")||skinNames.includes("Рыцарский")||skinNames.includes("Грибной")'),false);
 assert.deepEqual(Array.from(run('[0,9,10,11,12,13,14,15,16,17].map(migrateHorseSelection)')),[0,9,0,0,10,11,12,13,14,0]);
-for(let i=0;i<15;i++){run('setSkin('+i+'); renderPreview()');assert.equal(run('selectedSkin'),i);}
+assert.equal(run('selectedSkin'),FREE_SKIN_TEST());
+function FREE_SKIN_TEST(){return run('FREE_SKIN');}
+assert(run('!setSkin(0)&&ownedSkins.size===1'));
+run('showMenuPane("skins")');for(let i=0;i<15;i++){run('previewChoice('+i+');renderPreview()');assert.equal(run('previewSkin'),i);assert.equal(run('selectedSkin'),3);}
+run('wallet=150;previewChoice(0)');assert(run('activateCatalogSkin()&&ownsSkin(0)&&selectedSkin===0&&wallet===0'));assert(run('!purchaseSkin(0)'));run('showMenuPane("home")');
 for(let b=0;b<4;b++){
  run('quality=0; start(); advanceIntro(2);');
  assert(run('biomeIndex(distance)>=0&&biomeIndex(distance)<4'));
