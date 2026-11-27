@@ -5,7 +5,7 @@ function migrateHorseSelection(value){let i=Number(value);if(!Number.isInteger(i
 try{let saved=localStorage.getItem('kings-road-skin-v2');selectedSkin=saved===null||saved===undefined?migrateHorseSelection(localStorage.getItem('kings-road-skin')):clamp(Number(saved)||0,0,14)|0;}catch(e){}
 const skinNames=["Вороной","Серый","Рыжий","Гнедой","Каштановый","Обсидиановый","Снежный","Пегий","В яблоках","Зебра","Огненный","Демонический","Лесной","Единорог","Пустотный"];const skinSwatches=["#272727","#a0a0a0","#9b250d","#a66b37","#a45e35","#252a33","#e7e1d5","#bd8f63","#90908d","#d3d0c9","#eb6424","#6c262b","#65823e","#e9ddec","#5b3c83"];
 
-const skinPrices=[150,200,250,0,350,650,550,450,500,900,1500,2200,1250,2800,3500];
+const skinPrices=[2000,2500,3000,0,4000,7500,6500,5000,6000,9500,15000,19000,12000,22000,25000];
 const skinRarity=[0,0,0,0,0,1,1,1,1,2,2,3,2,3,3];
 const rarityNames=['Обычный','Редкий','Эпический','Легендарный'];
 let ownedSkins=new Set([FREE_SKIN]);

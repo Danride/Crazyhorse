@@ -80,7 +80,9 @@ assert.equal(run('selectedSkin'),FREE_SKIN_TEST());
 function FREE_SKIN_TEST(){return run('FREE_SKIN');}
 assert(run('!setSkin(0)&&ownedSkins.size===1'));
 run('showMenuPane("skins")');for(let i=0;i<15;i++){run('previewChoice('+i+');renderPreview()');assert.equal(run('previewSkin'),i);assert.equal(run('selectedSkin'),3);}
-run('wallet=150;previewChoice(0)');assert(run('activateCatalogSkin()&&ownsSkin(0)&&selectedSkin===0&&wallet===0'));assert(run('!purchaseSkin(0)'));run('showMenuPane("home")');
+assert(run('Math.min(...skinPrices.filter(p=>p>0))===2000&&skinPrices.filter(p=>p===0).length===1'));
+assert(run('skinNames.every((_,i)=>{const a=skinCardArt(i);return a.includes("<polygon")&&!/NaN|Infinity/.test(a)&&a===skinCardArt(i)})&&skinThumbnailCache.size===15'));
+run('wallet=2000;previewChoice(0)');assert(run('activateCatalogSkin()&&ownsSkin(0)&&selectedSkin===0&&wallet===0'));assert(run('!purchaseSkin(0)'));run('showMenuPane("home")');
 for(let b=0;b<4;b++){
  run('quality=0; start(); advanceIntro(2);');
  assert(run('biomeIndex(distance)>=0&&biomeIndex(distance)<4'));
