@@ -68,7 +68,7 @@ function renderNpcCombos(){
  // Save the last actual screen position before a fast pass moves the rider behind the camera.
  for(const c of traffic){if(c.dead||c.z<.4||c.z>40||Math.abs(c.x-px)>5.5)continue;const a=riderComboAnchor(c);if(a)c.comboAnchor=a;}
  let used=0,placed=[];
- const compact=mobile||W<=760;for(const a of npcComboPopups.slice(compact?-2:-4)){if(a.until<=nowTime)continue;
+ const compact=mobile||W<=760;for(const a of npcComboPopups.slice(isLandscapeHud()?-1:compact?-2:-4)){if(a.until<=nowTime)continue;
   const c=a.c,p=!c.dead?riderComboAnchor(c):null;
   if(p&&!a.detached){a.x=p.x;a.y=p.y;}
   else if(a.x!==null){a.detached=true;}

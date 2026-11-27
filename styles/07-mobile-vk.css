@@ -162,3 +162,40 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 #skinButtons .horseArt svg{position:absolute;inset:0;width:100%;height:100%;transform:none}
 #previewLoading{position:absolute;z-index:3;top:48%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;max-width:90%;padding:8px 12px;border:1px solid #aa8555;background:#2e2119e8;color:#f5ddb1;font:13px Georgia,serif;text-align:center;pointer-events:none;border-radius:4px}
 #previewLoading[hidden]{display:none!important}
+
+/* v3.7.6 — landscape run HUD. Keep the central road and horizon clear. */
+#game.landscapeHud{
+ --run-hud-top:calc(max(8px,var(--safe-t)) + var(--vk-header));
+ --run-hud-left:calc(10px + var(--safe-l));
+ --run-hud-right:calc(10px + var(--safe-r));
+ --run-hud-width:min(26vw,176px);
+}
+#game.landscapeHud #distanceOnly{
+ top:var(--run-hud-top);left:var(--run-hud-left);right:auto;transform:none;
+ display:grid;grid-template-columns:max-content max-content;align-items:center;justify-content:start;column-gap:5px;
+ text-align:left;font-size:clamp(23px,3.8vh,29px);line-height:1;
+}
+#game.landscapeHud #distanceOnly .distanceLine{grid-column:1/-1}
+#game.landscapeHud #distanceOnly .scoreLine{justify-content:flex-start;font-size:12px;margin-top:3px}
+#game.landscapeHud #distanceOnly .scoreCaption{margin-top:3px;font-size:8px;letter-spacing:.5px}
+#game.landscapeHud #cleanPause{top:var(--run-hud-top);right:var(--run-hud-right);width:44px;height:44px}
+#game.landscapeHud #runCoinHud{top:calc(var(--run-hud-top) + 13px);right:calc(var(--run-hud-right) + 54px);font-size:17px;gap:4px}
+#game.landscapeHud .runCoinIcon{width:15px;height:15px;font-size:10px}
+#game.landscapeHud #comboMini{top:calc(var(--run-hud-top) + 46px);left:var(--run-hud-left);right:auto;transform:none;max-width:var(--run-hud-width);padding:3px 6px;gap:5px;font-size:9px;white-space:normal;background:#30241bb8}
+#game.landscapeHud #comboMini b{font-size:14px;white-space:nowrap}
+#game.landscapeHud #npcComboLayer .npcCombo{top:calc(var(--run-hud-top) + 51px)!important;left:auto!important;right:var(--run-hud-right);transform:none;max-width:var(--run-hud-width);min-width:0;flex-direction:row;gap:5px;padding:4px 6px;background:#30241bb8;white-space:normal}
+#game.landscapeHud #npcComboLayer .npcCombo span{font-size:9px}
+#game.landscapeHud #npcComboLayer .npcCombo b{font-size:14px;white-space:nowrap}
+#game.landscapeHud #speechLayer .speechBubble{top:calc(var(--run-hud-top) + 80px)!important;left:var(--run-hud-left)!important;right:auto;transform:none;max-width:var(--run-hud-width);min-width:0;padding:6px 8px;font-size:11px;line-height:1.2;overflow-wrap:anywhere;box-shadow:0 1px 5px #241b1444;text-align:left;background:#fffef0ed}
+#game.landscapeHud .speechBubble .tail,#game.landscapeHud .speechBubble:before,#game.landscapeHud .speechBubble:after{display:none}
+#game.landscapeHud #passWarn{top:auto!important;bottom:calc(62px + var(--safe-b));transform:none;max-width:var(--run-hud-width);font-size:10px;line-height:1.15;padding:5px 7px;white-space:normal;text-align:center}
+#game.landscapeHud #passWarn.left{left:var(--run-hud-left)!important;right:auto!important}
+#game.landscapeHud #passWarn.right{left:auto!important;right:var(--run-hud-right)!important}
+#game.landscapeHud #passWarn i{display:inline-block;vertical-align:middle;font-size:16px;margin-right:4px}
+#game.landscapeHud.menuMode #distanceOnly,#game.landscapeHud:has(.overlay:not(.hidden)) #distanceOnly{display:none}
+@media(max-height:300px){
+ #game.landscapeHud #distanceOnly{font-size:21px}
+ #game.landscapeHud #comboMini{top:calc(var(--run-hud-top) + 41px)}
+ #game.landscapeHud #speechLayer .speechBubble{top:calc(var(--run-hud-top) + 66px)!important;font-size:10px;padding:4px 6px}
+ #game.landscapeHud #passWarn{bottom:calc(56px + var(--safe-b));font-size:9px}
+}
