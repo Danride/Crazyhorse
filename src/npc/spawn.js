@@ -2,7 +2,7 @@
 const POLICE_MODEL_ID=15;
 function markPolicePatrol(c,special=false){
  if(special||c.kind!==0||c.z<60)return false;
- const zone=biomeAt(distance+c.z);if(zone.kind!==1||zone.policeSpawned||traffic.some(o=>o.police&&!o.dead))return false;
+ const zone=biomeAt(distance+c.z);if(zone.policeSpawned||traffic.some(o=>o.police&&!o.dead))return false;
  zone.policeSpawned=true;c.police=true;c.modelIndex=POLICE_MODEL_ID;c.personality='steady';c.purpose='traveller';c.traits.aggression=.05;c.traits.skill=.9;c.traits.patience=.95;c.emotion='calm';c.baseV=9;c.actualV=c.v=c.baseV;c.cloth=col('293c50');
  if(typeof loadPoliceAsset==='function')loadPoliceAsset();return true;
 }

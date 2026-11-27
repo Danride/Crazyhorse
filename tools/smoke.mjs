@@ -84,7 +84,7 @@ assert.equal(run('newHorseData.models.length'),11);
 assert.equal(run('skinSwatches.length'),15);
 assert.equal(run('POLICE_MODEL_ID'),15);
 assert(run('!ownsSkin(POLICE_MODEL_ID)&&!purchaseSkin(POLICE_MODEL_ID)'));
-assert(run('(()=>{resetBiomeRoute(1,1);distance=0;traffic=[];const a=makeCar(2,100,0),b=makeCar(3,120,0);let ok=markPolicePatrol(a)&&a.police&&a.modelIndex===POLICE_MODEL_ID&&!markPolicePatrol(b);traffic.push(a);return ok&&!tryPlayerRevenge(a)&&!a.rude})()'));
+assert(run('(()=>{for(let k=0;k<4;k++){resetBiomeRoute(k,1);distance=0;traffic=[];const a=makeCar(2,100,0),b=makeCar(3,120,0);if(!markPolicePatrol(a)||!a.police||a.modelIndex!==POLICE_MODEL_ID||markPolicePatrol(b))return false;traffic.push(a);if(tryPlayerRevenge(a)||a.rude)return false;}return true})()'));
 assert.equal(run('skinNames.includes("Королевский")||skinNames.includes("Рыцарский")||skinNames.includes("Грибной")'),false);
 assert.deepEqual(Array.from(run('[0,9,10,11,12,13,14,15,16,17].map(migrateHorseSelection)')),[0,9,0,0,10,11,12,13,14,0]);
 assert.equal(run('selectedSkin'),FREE_SKIN_TEST());

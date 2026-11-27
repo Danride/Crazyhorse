@@ -8,4 +8,4 @@ html=html.replace(/<link rel="stylesheet" href="([^"\n]+)">/g,(_,p)=>'<style>\n'
 html=html.replace(/<script src="([^"\n]+)"><\/script>/g,(_,p)=>'<script>\n'+read(p.split('?')[0])+'\n</script>');
 if(existsSync(resolve(root,'assets/npc/police-horse.json')))html=html.replace('</head>','<script>window.POLICE_HORSE_ASSET='+read('assets/npc/police-horse.json')+';</script></head>');
 mkdirSync(resolve(root,'dist'),{recursive:true});
-const out=resolve(root,'dist/Crazy-Horse-v3.7.1.html');writeFileSync(out,html);console.log(out);
+const out=resolve(root,'dist/Crazy-Horse-v3.7.2.html');writeFileSync(out,html);console.log(out);
