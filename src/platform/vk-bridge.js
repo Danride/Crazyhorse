@@ -26,7 +26,7 @@ function vkHandleEvent(event){
  if(type==='VKWebAppViewHide'){
   vkHidden=vkGameReady&&(state==='running'||state==='intro');if(vkGameReady){releaseAllControls();if(state==='running')pause();recordProgress(true);if(typeof saveFlush==='function')saveFlush();stopHoofLoop();stopHorseVoice();if(typeof speechSynthesis!=='undefined')speechSynthesis.cancel();}
  }
- if(type==='VKWebAppViewRestore'){vkHidden=false;if(vkGameReady){resize();vkUpdateNavigation();}}
+ if(type==='VKWebAppViewRestore'){vkHidden=false;if(vkGameReady){resize();vkUpdateNavigation();if(typeof saveRefresh==='function')saveRefresh();}}
 }
 function vkUpdateNavigation(){
  if(!vkReady||!vkGameReady)return;

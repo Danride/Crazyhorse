@@ -1,10 +1,10 @@
 {
   "name": "crazyhorse",
-  "version": "3.7.8",
+  "version": "3.7.9",
   "private": true,
   "scripts": {
     "start": "python -m http.server 8000",
     "build": "node tools/build.mjs",
-    "test": "node tools/check.mjs && node tools/smoke.mjs"
+    "test": "node tools/check.mjs && node tools/sync.mjs && node tools/smoke.mjs"
   }
 }

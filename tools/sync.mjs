@@ -1,0 +1,30 @@
+// Test actual save module with in-memory VK and separate local storage per device.
+import {readFileSync} from 'node:fs';
+const source=readFileSync(new URL('../src/platform/save.js',import.meta.url),'utf8');
+const fixture="const upgradeKeys=['turn','jump','stability'],upgradeCosts=[100,250,500,1000,2000],skinPrices=[2000,2500,3000,0],FREE_SKIN=3,DAILY_METRICS=['meters','coins','passes','score'],DAILY_TASKS={meters:{target:1500,xp:100},coins:{target:60,xp:90},passes:{target:75,xp:110},score:{target:350,xp:100}},REVIVE_DAILY_LIMIT=3;\nconst localDay=()=>'2026-11-28',dayTasks=()=>['meters','coins','passes'],freshDaily=day=>({day,counts:{meters:0,coins:0,passes:0,score:0},claimed:[]}),isActiveSkin=i=>Number.isInteger(i)&&i>=0&&i<=3,normalizeReviveDaily=(r,day=localDay())=>r?.day>=day?{day:r.day,used:Math.max(0,Math.min(3,r.used||0))}:{day,used:0};\nconst addEventListener=()=>{};\nconst $=()=>null;";
+const scenarios="const make=(wallet=3000)=>({version:2,stamp:1,data:{wallet,best:0,levels:{turn:0,jump:0,stability:0},owned:[3],selected:3,progress:{xp:0,daily:freshDaily(localDay())},revive:{day:localDay(),used:0},insurance:1,quality:'auto'}});\nconst cp=s=>JSON.parse(JSON.stringify(s)),check=(v,msg)=>{if(!v)throw Error(msg);};\nconst base=make(),a=cp(base),b=cp(base);a.data.wallet+=50;b.data.wallet+=70;a.data.best=100;b.data.best=200;a.data.progress.xp=10;b.data.progress.xp=20;\nconst m=saveMergeProgress(base,a,b);check(m?.data.wallet===3120&&m.data.best===200&&m.data.progress.xp===30,'independent rewards must merge');\nconst c=cp(base),d=cp(base);for(const q of [c,d]){q.data.wallet-=2000;q.data.owned=[0,3];q.data.selected=0;}\ncheck(saveMergeProgress(base,c,d)?.data.wallet===1000,'duplicate purchase charged once');\nconst e=cp(base),f=cp(base);e.data.insurance=0;f.data.insurance=0;check(saveMergeProgress(base,e,f)===null,'double spend must conflict');\nconst g=cp(base),h=cp(base);g.data.revive.used=2;h.data.revive.used=2;check(saveMergeProgress(base,g,h)===null,'daily limit must conflict');\nconst i=cp(base),j=cp(base);i.data.wallet-=2000;i.data.owned=[0,3];j.data.wallet-=2500;j.data.owned=[1,3];check(saveMergeProgress(base,i,j)===null,'overspending must conflict');\nconst k=cp(base),l=cp(base);k.data.levels.turn=1;k.data.wallet-=100;l.data.levels.turn=2;l.data.wallet-=350;check(saveMergeProgress(base,k,l)?.data.wallet===2650,'duplicate upgrades charged once');\nconst n=cp(base),o=cp(base);for(const q of [n,o]){q.data.progress.daily.counts.coins=60;q.data.progress.daily.claimed=['coins'];q.data.progress.xp=90;}check(saveMergeProgress(base,n,o)?.data.progress.xp===90,'daily reward only once');\nconst p=cp(base),q=cp(base);p.data.progress.daily.counts.meters=250;q.data.progress.daily.counts.meters=400;check(saveMergeProgress(base,p,q)?.data.progress.daily.counts.meters===650,'daily progress sums increments');\nreturn '8 cases passed';";
+console.log(new Function(fixture+'\n'+source+'\n'+scenarios)());
+
+const deviceFixture=fixture+`
+let state='menu',vkReady=true,vkGameReady=false,reviveBusy=false,wallet=0,best=0,recordSaved=0,horseLevels={turn:0,jump:0,stability:0},ownedSkins=new Set([3]),selectedSkin=3,previewSkin=3,playerProgress={xp:0,daily:freshDaily(localDay())},reviveDaily=normalizeReviveDaily(null),insuranceCount=0,qualityMode='auto',quality=2,mobile=false,progressDirty=false,runProgressSnapshot=null;
+const window={location:{search:'?vk_user_id=42'},confirm:()=>true},vkEnvironment=()=>true,ownsSkin=i=>ownedSkins.has(i),updateInsuranceHUD=()=>{},recordProgress=()=>{};
+const localStorage={getItem:k=>disk.get(k)??null,setItem:(k,v)=>disk.set(k,v)};
+const vkCall=async(method,args)=>{if(!cloud.online)return null;if(method==='VKWebAppStorageGet')return {keys:[{key:args.keys[0],value:cloud.raw||''}]};if(method==='VKWebAppStorageSet'){cloud.raw=args.value;if(cloud.dropAck){cloud.dropAck=false;return null;}return {result:true};}return null;};`;
+const factory=new Function('cloud','disk',deviceFixture+'\n'+source+`\nsaveInitLocal();return {sync:()=>saveSync(true),gain:n=>{wallet+=n;saveCommit();},useInsurance:()=>{insuranceCount--;saveCommit();},grantInsurance:()=>{insuranceCount++;saveCommit();},status:()=>({wallet,insuranceCount,conflict:saveConflict,message:saveSyncMessage,base:saveCloudBase?.syncId}),save:()=>saveCurrent};`);
+const assert=(ok,label)=>{if(!ok)throw Error(label);console.log('PASS '+label);};
+const cloud={raw:'',online:true},diskA=new Map(),diskB=new Map();const a=factory(cloud,diskA);
+assert(await a.sync(),'initialize empty cloud');
+a.gain(100);a.grantInsurance();assert(await a.sync(),'upload verified revision');
+const b=factory(cloud,diskB);assert(await b.sync()&&b.status().wallet===100&&b.status().insuranceCount===1,'new device imports account');
+a.gain(20);b.gain(30);assert(await a.sync()&&await b.sync()&&await a.sync()&&a.status().wallet===150&&b.status().wallet===150,'two devices merge independent earnings');
+cloud.online=false;a.gain(5);assert(!await a.sync(),'offline write not reported synced');
+const a2=factory(cloud,diskA);assert(a2.status().wallet===155,'offline changes survive reload');
+cloud.online=true;assert(await a2.sync()&&await b.sync()&&b.status().wallet===155,'reconnect uploads pending progress');
+a2.gain(7);cloud.dropAck=true;assert(!await a2.sync(),'lost write acknowledgement');
+a2.gain(3);assert(await a2.sync()&&await b.sync()&&b.status().wallet===165,'retry lost acknowledgement without double counting');
+const commonRaw=cloud.raw;a2.gain(11);b.gain(13);assert(await a2.sync(),'first branch written');
+cloud.raw=commonRaw;assert(await b.sync(),'simulate competing write from same common revision');
+assert(await a2.sync()&&await b.sync()&&a2.status().wallet===189&&b.status().wallet===189,'recover competing writes using common ancestor');
+a2.useInsurance();b.useInsurance();assert(await a2.sync(),'first insurance spend synced');
+assert(!await b.sync()&&b.status().conflict&&JSON.parse(cloud.raw).data.insurance===0,'double spend preserved as conflict');
+console.log('OK: simulated VK synchronization');

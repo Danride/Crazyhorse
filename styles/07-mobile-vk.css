@@ -206,3 +206,6 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 @media (orientation:portrait) and (max-width:760px){#runCoinHud{flex-wrap:wrap;justify-content:flex-end;max-width:90px}#runCoinHud .insuranceHud{flex-basis:100%;justify-content:flex-end;border-left:0;margin-left:0;padding-left:0;font-size:15px}}
 #game.landscapeHud #runCoinHud .insuranceHud{font-size:15px;gap:3px;margin-left:3px;padding-left:5px}
 #game.landscapeHud #runCoinHud .insuranceHud svg{width:15px;height:17px}
+
+/* Account sync state; only visible inside VK. */
+#saveSyncStatus,#saveSyncResult{display:block;color:#dcc49a;font:11px/1.3 Georgia,serif;overflow-wrap:anywhere}#saveSyncResult{margin:4px 0}#saveSyncStatus[hidden],#saveSyncResult[hidden],#saveSyncActions[hidden]{display:none!important}#saveSyncActions{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:5px;border:1px solid #b8945e;background:#342419;color:#ffe4b2}#saveSyncDetails{grid-column:1/-1;font:11px/1.3 Georgia,serif;overflow-wrap:anywhere}#saveSyncActions button{min-height:40px;padding:4px;border:1px solid #b8945e;background:#60442a;color:#fff0c9;font:11px Georgia,serif}#saveSyncActions button:disabled{opacity:.5}

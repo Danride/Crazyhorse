@@ -22,7 +22,7 @@ function renderReviveOffer(){
  btn.disabled=reviveBusy||!(insured?insuranceReviveAvailable():reviveAvailable());
  btn.textContent=reviveBusy?'Проверяем продолжение…':insured?'Продолжить за страховку':left===0?'Лимит на сегодня исчерпан':'▶  Продолжить за рекламу';
  $('reviveStatus').textContent=reviveMessage||(insured?(!insuranceReviveAvailable()?'Хранилище недоступно.':'Будет использована одна страховка.'):!vkReady?'Доступно в VK при подключении рекламы.':!saveLocalOK&&!saveCloudRead?'Хранилище недоступно.':'');
- $('start').disabled=reviveBusy;$('backMenu').disabled=reviveBusy;
+ $('start').disabled=reviveBusy||saveLoading;$('backMenu').disabled=reviveBusy;
 }
 function reviveTick(){
  if(state!=='over')return;
